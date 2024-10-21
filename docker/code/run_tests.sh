@@ -1,5 +1,5 @@
 #!/bin/bash
-
+ 
 SOLUTION_FILE="solution.cpp"
 TESTER_FILE="tester.cpp"
 MEMORY_LIMIT=${MEMORY_LIMIT:-65536}

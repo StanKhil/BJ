@@ -6,7 +6,7 @@ import { PrismaClientExceptionFilter } from './shared/filters/prisma-exception.f
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-
+  app.setGlobalPrefix('api');
   const config = new DocumentBuilder()
     .setTitle('BJ')
     .setDescription('BJ documentation')

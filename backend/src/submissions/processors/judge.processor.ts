@@ -29,7 +29,8 @@ export class JudgeConsumer extends WorkerHost {
         const solutionCode = job.data.submission.code;
         const testerCode = job.data.tester.code;
         const input = tests[i].input;
-        const dirPath = join(process.cwd(), 'submissions', uuidv4());
+        const dirName = uuidv4();
+        const dirPath = join(process.cwd(), 'submissions', dirName);
         const inputPath = join(dirPath, 'input.txt');
         const outputPath = join(dirPath, 'output.txt');
         const solutionPath = join(dirPath, 'solution.' + solutionLang);
@@ -40,13 +41,15 @@ export class JudgeConsumer extends WorkerHost {
         await writeFile(solutionPath, solutionCode);
         await writeFile(testerPath, testerCode);
         await exec(
-          `docker run --rm -v ${inputPath}:/usr/src/app/input.txt -v ${outputPath}:/usr/src/app/output.txt -v ${solutionPath}:/usr/src/app/solution.${solutionLang}:ro -v ${testerPath}:/usr/src/app/tester.${testerLang}:ro ${this.config.get('DOCKER_CONTAINER')}`,
+          `docker run --rm -v ${join(this.config.get('PATH_TO_SUBMISSIONS'), dirName, 'input.txt')}:/usr/src/app/input.txt ` +
+            `-v ${join(this.config.get('PATH_TO_SUBMISSIONS'), dirName, 'output.txt')}:/usr/src/app/output.txt ` +
+            `-v ${join(this.config.get('PATH_TO_SUBMISSIONS'), dirName, 'solution.' + solutionLang)}:/usr/src/app/solution.${solutionLang}:ro ` +
+            `-v ${join(this.config.get('PATH_TO_SUBMISSIONS'), dirName, 'tester.' + solutionLang)}:/usr/src/app/tester.${testerLang}:ro ${this.config.get('DOCKER_CONTAINER')}`,
         );
         const testVerdict: Verdict = (
           await readFile(outputPath)
         ).toString() as Verdict;
         verdicts.push(testVerdict);
-        await rm(dirPath, { recursive: true });
       }
       let verdict: Verdict = 'OK';
       if (verdicts.includes('CE')) verdict = 'CE';

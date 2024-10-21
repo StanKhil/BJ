@@ -1,14 +1,13 @@
 version: '3.8'
 services:
   redis:
-    container_name: "bjredis"
+    container_name: "bjredisdev"
     restart: unless-stopped
     image: 'redis:alpine'
     ports:
       - '6379:6379'
-    environment:
   database:
-    container_name: "bjdb"
+    container_name: "bjdbdev"
     restart: unless-stopped
     image: postgres:13
     ports:
@@ -17,5 +16,3 @@ services:
       POSTGRES_DB: "nest"
       POSTGRES_USER: "admin"
       POSTGRES_PASSWORD: "admin"
-    networks:
-      myapp_net:

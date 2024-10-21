@@ -9,11 +9,15 @@ services:
     depends_on:
       - backend
   backend:
+    image: bjbackend:latest
     container_name: "bjbackend"
     restart: unless-stopped
     build: ../../backend/ 
     ports:
       - 3000:3000
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ../../backend/submissions:/app/submissions
     depends_on:
       - database
       - redis
@@ -23,6 +27,8 @@ services:
     image: 'redis:alpine'
     ports:
       - '6379:6379'
+    volumes:
+      - redis:/data
   database:
     container_name: "bjdb"
     restart: unless-stopped
@@ -33,5 +39,11 @@ services:
       POSTGRES_DB: nest
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: admin
+    volumes:
+      - bjdb:/var/lib/postgresql/data
     env_file:
       - ../../backend/.env.prod
+
+volumes:
+  redis:
+  bjdb:

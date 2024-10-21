@@ -1,0 +1,9 @@
+@import url(https://fonts.googleapis.com/css?family=Raleway);
+button {
+  padding: 10px;
+  border: 1px solid #ccc;
+  cursor: pointer;
+  color:white;
+  background-color:#5083cf; 
+  &:hover{background-color:#376ec2 ;}
+}

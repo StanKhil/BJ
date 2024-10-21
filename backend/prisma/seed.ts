@@ -7,17 +7,19 @@ dotenv.config();
 const prisma = new PrismaClient();
 
 async function main() {
-  const password = await argon.hash(process.env.ADMIN_PASSWORD);
-  await prisma.user.create({
-    data: {
-      role: Role.ADMIN,
-      username: process.env.ADMIN_USERNAME,
-      password,
-    },
-  });
+  try {
+    const password = await argon.hash(process.env.ADMIN_PASSWORD);
+    await prisma.user.create({
+      data: {
+        role: Role.ADMIN,
+        username: process.env.ADMIN_USERNAME,
+        password,
+      },
+    });
+  } catch (e) {
+    console.log('Something went wrong, or this user already exist');
+  }
 }
-main()
-  .catch((e) => console.error(e))
-  .finally(async () => {
-    await prisma.$disconnect();
-  });
+main().finally(async () => {
+  await prisma.$disconnect();
+});
