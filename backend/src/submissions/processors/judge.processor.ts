@@ -40,12 +40,13 @@ export class JudgeConsumer extends WorkerHost {
         await writeFile(outputPath, '');
         await writeFile(solutionPath, solutionCode);
         await writeFile(testerPath, testerCode);
-        await exec(
+        const command =
           `docker run --rm -v ${join(this.config.get('PATH_TO_SUBMISSIONS'), dirName, 'input.txt')}:/usr/src/app/input.txt ` +
-            `-v ${join(this.config.get('PATH_TO_SUBMISSIONS'), dirName, 'output.txt')}:/usr/src/app/output.txt ` +
-            `-v ${join(this.config.get('PATH_TO_SUBMISSIONS'), dirName, 'solution.' + solutionLang)}:/usr/src/app/solution.${solutionLang}:ro ` +
-            `-v ${join(this.config.get('PATH_TO_SUBMISSIONS'), dirName, 'tester.' + solutionLang)}:/usr/src/app/tester.${testerLang}:ro ${this.config.get('DOCKER_CONTAINER')}`,
-        );
+          `-v ${join(this.config.get('PATH_TO_SUBMISSIONS'), dirName, 'output.txt')}:/usr/src/app/output.txt ` +
+          `-v ${join(this.config.get('PATH_TO_SUBMISSIONS'), dirName, 'solution.' + solutionLang)}:/usr/src/app/solution.${solutionLang} ` +
+          `-v ${join(this.config.get('PATH_TO_SUBMISSIONS'), dirName, 'tester.' + solutionLang)}:/usr/src/app/tester.${testerLang} ${this.config.get('DOCKER_CONTAINER')}`;
+        console.log(command);
+        await exec(command);
         const testVerdict: Verdict = (
           await readFile(outputPath)
         ).toString() as Verdict;

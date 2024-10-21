@@ -1,5 +1,5 @@
 #!/bin/bash
- 
+
 SOLUTION_FILE="solution.cpp"
 TESTER_FILE="tester.cpp"
 MEMORY_LIMIT=${MEMORY_LIMIT:-65536}
@@ -29,11 +29,15 @@ if [ $EXIT_CODE -ne 0 ]; then
     exit 0
 fi
 
+ulimit -v unlimited
+
 g++ -o tester $TESTER_FILE
 if [ $? -ne 0 ]; then
     printf "CE" > output.txt
     exit 0
 fi
+
+ulimit -v $MEMORY_LIMIT
 
 sed -e '$s/$/\n/' input.txt user_output.txt > tester_input.txt
 ./tester < tester_input.txt > output.txt

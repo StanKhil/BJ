@@ -6,7 +6,7 @@ import Groups from './pages/Groups.vue'
 import Profile from './pages/Profile.vue'
 import Login from './pages/Login.vue'
 import Problems from './pages/Problems.vue'
-import Admin from './pages/Admin.vue'
+import Admin from './pages/admin/Admin.vue'
 
 const routes = [
   { path: '/login', component: Login },
