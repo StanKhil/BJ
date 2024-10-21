@@ -3,8 +3,7 @@ import AdminNavComponent from '@/components/AdminNavComponent.vue';
 </script>
 
 <template>
-  <AdminNavComponent objType="user"></AdminNavComponent>
+  <AdminNavComponent objType="group"></AdminNavComponent>
 </template>
-
 <style scoped>
 </style>
