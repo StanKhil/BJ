@@ -10,10 +10,10 @@ if [ $? -ne 0 ]; then
     printf "CE" > output.txt
     exit 0
 fi
-
+(
 ulimit -v $MEMORY_LIMIT
-
 timeout ${TIME_LIMIT}s ./solution < input.txt > user_output.txt
+)
 EXIT_CODE=$?
 
 if [ $EXIT_CODE -eq 124 ]; then
@@ -29,15 +29,13 @@ if [ $EXIT_CODE -ne 0 ]; then
     exit 0
 fi
 
-ulimit -v unlimited
-
 g++ -o tester $TESTER_FILE
+
 if [ $? -ne 0 ]; then
     printf "CE" > output.txt
     exit 0
 fi
 
-ulimit -v $MEMORY_LIMIT
 
 sed -e '$s/$/\n/' input.txt user_output.txt > tester_input.txt
 ./tester < tester_input.txt > output.txt

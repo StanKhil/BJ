@@ -31,26 +31,25 @@ export class JudgeConsumer extends WorkerHost {
         const input = tests[i].input;
         const dirName = uuidv4();
         const dirPath = join(process.cwd(), 'submissions', dirName);
-        const inputPath = join(dirPath, 'input.txt');
-        const outputPath = join(dirPath, 'output.txt');
-        const solutionPath = join(dirPath, 'solution.' + solutionLang);
-        const testerPath = join(dirPath, 'tester.' + testerLang);
         await mkdir(dirPath);
-        await writeFile(inputPath, input);
-        await writeFile(outputPath, '');
-        await writeFile(solutionPath, solutionCode);
-        await writeFile(testerPath, testerCode);
+        await writeFile(join(dirPath, 'input.txt'), input);
+        await writeFile(join(dirPath, 'output.txt'), '');
+        await writeFile(
+          join(dirPath, 'solution.' + solutionLang),
+          solutionCode,
+        );
+        await writeFile(join(dirPath, 'tester.' + testerLang), testerCode);
         const command =
-          `docker run --rm -v ${join(this.config.get('PATH_TO_SUBMISSIONS'), dirName, 'input.txt')}:/usr/src/app/input.txt ` +
-          `-v ${join(this.config.get('PATH_TO_SUBMISSIONS'), dirName, 'output.txt')}:/usr/src/app/output.txt ` +
-          `-v ${join(this.config.get('PATH_TO_SUBMISSIONS'), dirName, 'solution.' + solutionLang)}:/usr/src/app/solution.${solutionLang} ` +
-          `-v ${join(this.config.get('PATH_TO_SUBMISSIONS'), dirName, 'tester.' + solutionLang)}:/usr/src/app/tester.${testerLang} ${this.config.get('DOCKER_CONTAINER')}`;
-        console.log(command);
+          `docker run --rm -v ${join(this.config.get('HOST_PATH_TO_SUBMISSIONS'), dirName, 'input.txt')}:/usr/src/app/input.txt ` +
+          `-v ${join(this.config.get('HOST_PATH_TO_SUBMISSIONS'), dirName, 'output.txt')}:/usr/src/app/output.txt ` +
+          `-v ${join(this.config.get('HOST_PATH_TO_SUBMISSIONS'), dirName, 'solution.' + solutionLang)}:/usr/src/app/solution.${solutionLang} ` +
+          `-v ${join(this.config.get('HOST_PATH_TO_SUBMISSIONS'), dirName, 'tester.' + solutionLang)}:/usr/src/app/tester.${testerLang} ${this.config.get('DOCKER_CONTAINER')}`;
         await exec(command);
         const testVerdict: Verdict = (
-          await readFile(outputPath)
+          await readFile(join(dirPath, 'output.txt'))
         ).toString() as Verdict;
         verdicts.push(testVerdict);
+        await rm(dirPath, { recursive: true });
       }
       let verdict: Verdict = 'OK';
       if (verdicts.includes('CE')) verdict = 'CE';
