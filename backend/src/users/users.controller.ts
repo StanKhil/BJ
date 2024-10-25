@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   Param,
+  Patch,
   Post,
   UseGuards,
 } from '@nestjs/common';
@@ -14,6 +15,7 @@ import { Roles } from 'src/auth/decorators/roles.decorator';
 import { Role } from '@prisma/client';
 import { JwtGuard } from 'src/auth/guards/jwt.guard';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @ApiBearerAuth()
 @Roles(Role.ADMIN)
@@ -27,10 +29,13 @@ export class UsersController {
     return this.userService.get();
   }
   @Post('')
-  signip(@Body() dto: CreateUserDto) {
+  create(@Body() dto: CreateUserDto) {
     return this.userService.create(dto);
   }
-
+  @Patch(':id')
+  update(@Body() dto: UpdateUserDto, @Param('id') id: string) {
+    return this.userService.update(dto, id);
+  }
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.userService.remove(id);
