@@ -50,6 +50,7 @@ h2 {
 }
 
 .menu {
+  z-index: 99;
   display: flex;
   flex-direction: row;
   list-style-type: none;

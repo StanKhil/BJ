@@ -66,15 +66,16 @@ const login = async () => {
     padding: 8px;
 }
 input {
-    padding: 8px;
+    padding: 12px;
     width: 100%;
     margin-top: 16px;
     background: 
-    linear-gradient(#5083cf, #5083cf) center bottom 5px /calc(100% - 10px) 2px no-repeat;
+    linear-gradient(#5083cf, #5083cf) center bottom 5px /calc(100% - 10px) 1px no-repeat;
     border: 0;
 }
 button {
     border: 0;
+    border-radius: 0;
 }
 h3 {
     margin: 0;

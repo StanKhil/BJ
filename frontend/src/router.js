@@ -7,12 +7,24 @@ import Profile from './pages/Profile.vue'
 import Login from './pages/Login.vue'
 import Problems from './pages/Problems.vue'
 import Admin from './pages/admin/Admin.vue'
-import Users from './pages/admin/Users.vue'
+import UsersAdmin from './pages/admin/Users.vue'
+import GroupsAdmin from './pages/admin/Groups.vue'
+import ContestsAdmin from './pages/admin/Contests.vue'
+import ProblemsAdmin from './pages/admin/Problems.vue'
 
 const routes = [
   { path: '/login', component: Login },
-  { path: '/admin', component: Admin },
-  { path: '/admin/users', component: Users },
+  { 
+    path: '/admin',
+    component: Admin,
+    children: [
+      { path: 'users', component: UsersAdmin },
+      { path: 'groups', component: GroupsAdmin },
+      { path: 'contests', component: ContestsAdmin },
+      { path: 'problems', component: ProblemsAdmin },
+    ]
+  },
+  
   { path: '/about', component: AboutUs },
   { path: '/groups', component: Groups },
   { path: '/profile', component: Profile },
