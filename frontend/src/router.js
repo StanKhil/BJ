@@ -7,10 +7,12 @@ import Profile from './pages/Profile.vue'
 import Login from './pages/Login.vue'
 import Problems from './pages/Problems.vue'
 import Admin from './pages/admin/Admin.vue'
+import Users from './pages/admin/Users.vue'
 
 const routes = [
   { path: '/login', component: Login },
   { path: '/admin', component: Admin },
+  { path: '/admin/users', component: Users },
   { path: '/about', component: AboutUs },
   { path: '/groups', component: Groups },
   { path: '/profile', component: Profile },
