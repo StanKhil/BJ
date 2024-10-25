@@ -3,7 +3,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateUserDto } from './dto';
 import * as argon from 'argon2';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
-import { Role } from '@prisma/client';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
 export class UsersService {
@@ -33,9 +33,20 @@ export class UsersService {
       throw e;
     }
   }
+  async update(dto: UpdateUserDto, id: string) {
+    if (dto.password) {
+      dto.password = await argon.hash(dto.password);
+    }
+    return await this.prisma.user.update({
+      where: {
+        id,
+      },
+      data: dto,
+    });
+  }
   async remove(id: string) {
     try {
-      const user = this.prisma.user.delete({ where: { id, role: Role.USER } });
+      const user = this.prisma.user.delete({ where: { id } });
       return user;
     } catch (e) {
       throw e;
