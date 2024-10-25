@@ -4,7 +4,7 @@ import router from './router'
 import '@/assets/css/styles.css'
 import axios from 'axios'
 
-axios.defaults.baseURL = import.meta.env.BASE_URL;
+axios.defaults.baseURL = import.meta.env.VITE_API_URL;
 const app = createApp(App);
 
 app
