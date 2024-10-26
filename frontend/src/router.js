@@ -11,9 +11,10 @@ import UsersAdmin from './pages/admin/Users.vue'
 import GroupsAdmin from './pages/admin/Groups.vue'
 import ContestsAdmin from './pages/admin/Contests.vue'
 import ProblemsAdmin from './pages/admin/Problems.vue'
+import { useUserStore } from './stores/user.store'
 
 const routes = [
-  { path: '/login', component: Login },
+  { path: '/login', component: Login, name: 'login' },
   { 
     path: '/admin',
     component: Admin,
@@ -35,6 +36,14 @@ const routes = [
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes,
+})
+router.beforeEach((to, from, next) => {
+  const userStore = useUserStore();
+  if (userStore.user.token || to.name === 'login') {
+    next()
+  } else {
+    next({name: 'login'})
+  }
 })
 
 export default router

@@ -1,5 +1,11 @@
 <script setup>
 import HeaderComponent from './components/HeaderComponent.vue';
+import { useUserStore } from './stores/user.store';
+import axios from 'axios';
+
+const userStore = useUserStore()
+axios.defaults.headers.common['Authorization'] = `Bearer ${localStorage.getItem('token')}`;
+userStore.checkToken()
 </script>
 
 <template>

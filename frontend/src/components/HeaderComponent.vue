@@ -1,32 +1,27 @@
 <script setup>
 import router from '@/router';
-import { ref } from 'vue';
-const pages = ref(null);
-const openMenu = () => {
-  if (pages.value.style.display == 'none') {
-    pages.value.style.display = 'flex';
-  } else {
-    pages.value.style.display = 'none';
-  }
-  
-}
+import { useUserStore } from '@/stores/user.store';
+;
+const userStore = useUserStore();
 </script>
 
 <template>
 <section class="top-nav">
-    <div @click="router.push('/')">
+    <div class="logo" @click="router.push('/')">
       BJ
     </div>
     <input id="menu-toggle" type="checkbox" />
     <label class='menu-button-container' for="menu-toggle">
     <div class='menu-button'></div>
   </label>
-    <ul class="menu">
-      <li @click="router.push('/groups')">Groups</li>
-      <li @click="router.push('/problems')">Problems</li>
-      <li @click="router.push('/profile')">Profile</li>
-      <li @click="router.push('/logout')">Logout</li>
-      <li v-if="false">Login</li>
+    <ul class="menu" v-if="userStore.user.id">
+        <li @click="router.push('/groups')">Groups</li>
+        <li @click="router.push('/problems')">Problems</li>
+        <li @click="router.push('/admin')" v-if="userStore.user.role === 'ADMIN'">Admin</li>
+        <li @click="router.push('/profile')">{{ userStore.user.username }} ({{ userStore.user.role }})</li>
+    </ul>
+    <ul class="menu" v-else>
+      <li @click="router.push('/login')">Login</li>
     </ul>
   </section>
 
@@ -57,10 +52,13 @@ h2 {
   margin: 0;
   padding: 0;
 }
-
 .menu > li {
   margin: 0 1rem;
   overflow: hidden;
+  cursor: pointer;
+}
+
+.logo {
   cursor: pointer;
 }
 
