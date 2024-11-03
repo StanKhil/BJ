@@ -30,7 +30,11 @@ export class JudgeConsumer extends WorkerHost {
         const testerCode = job.data.tester.code;
         const input = tests[i].input;
         const dirName = uuidv4();
-        const dirPath = join(process.cwd(), 'submissions', dirName);
+        const dirPath = join(
+          this.config.get('SUBMISSIONS_PATH'),
+          'submissions',
+          dirName,
+        );
         await mkdir(dirPath);
         await writeFile(join(dirPath, 'input.txt'), input);
         await writeFile(join(dirPath, 'output.txt'), '');
@@ -40,10 +44,10 @@ export class JudgeConsumer extends WorkerHost {
         );
         await writeFile(join(dirPath, 'tester.' + testerLang), testerCode);
         const command =
-          `docker run --rm -v ${join(this.config.get('HOST_PATH_TO_SUBMISSIONS'), dirName, 'input.txt')}:/usr/src/app/input.txt ` +
-          `-v ${join(this.config.get('HOST_PATH_TO_SUBMISSIONS'), dirName, 'output.txt')}:/usr/src/app/output.txt ` +
-          `-v ${join(this.config.get('HOST_PATH_TO_SUBMISSIONS'), dirName, 'solution.' + solutionLang)}:/usr/src/app/solution.${solutionLang} ` +
-          `-v ${join(this.config.get('HOST_PATH_TO_SUBMISSIONS'), dirName, 'tester.' + solutionLang)}:/usr/src/app/tester.${testerLang} ${this.config.get('DOCKER_CONTAINER')}`;
+          `docker run --rm -v ${join(this.config.get('SUBMISSIONS_PATH_HOST'), dirName, 'input.txt')}:/usr/src/app/input.txt ` +
+          `-v ${join(this.config.get('SUBMISSIONS_PATH_HOST'), dirName, 'output.txt')}:/usr/src/app/output.txt ` +
+          `-v ${join(this.config.get('SUBMISSIONS_PATH_HOST'), dirName, 'solution.' + solutionLang)}:/usr/src/app/solution.${solutionLang} ` +
+          `-v ${join(this.config.get('SUBMISSIONS_PATH_HOST'), dirName, 'tester.' + solutionLang)}:/usr/src/app/tester.${testerLang} ${this.config.get('DOCKER_CONTAINER')}`;
         await exec(command);
         const testVerdict: Verdict = (
           await readFile(join(dirPath, 'output.txt'))

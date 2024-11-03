@@ -6,6 +6,7 @@
 
 generator client {
   provider = "prisma-client-js"
+  previewFeatures = ["omitApi"]
 }
 
 datasource db {
@@ -30,17 +31,16 @@ model Problem {
   description String
   rating Rating
   testCases TestCase[]
-  tester Tester[]
+  tester Tester?
   draft Boolean @default(true)
   submission Submission[]
   contests Contest[]
 }
 model Tester {
   id String   @id @default(uuid())
-  problemId String
+  problemId String @unique
   problem Problem @relation(fields: [problemId], references: [id])
   code String
-  active Boolean @default(true)
   language Language
 }
 model TestCase {
@@ -58,6 +58,8 @@ model Submission {
   problemId String
   problem Problem @relation(fields: [problemId], references: [id], onDelete: Cascade)
   verdict Verdict @default(PENDING)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 model Team {
   id String   @id @default(uuid())

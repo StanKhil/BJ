@@ -7,6 +7,8 @@
   "license": "MIT",
   "scripts": {
     "build": "nest build",
+    "migrate": "dotenv -e .env.dev -- npx prisma migrate dev",
+    "start:migrate:dev": "dotenv -e .env.dev -- npx prisma migrate deploy && dotenv -e .env.dev -- npm run seed && npm run start:dev",
     "start:migrate:prod": "dotenv -e .env.prod -- npx prisma migrate deploy && dotenv -e .env.prod -- npm run seed && npm run start",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "cross-env NODE_ENV=prod nest start",

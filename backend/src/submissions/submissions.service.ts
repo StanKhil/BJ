@@ -3,6 +3,11 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateSubmissionDto } from './dto';
 import { InjectQueue } from '@nestjs/bullmq';
 import { Queue } from 'bullmq';
+import { PageOptionsDto } from 'src/shared/dto/page-options.dto';
+import { PaginateFunction, paginator } from 'src/shared/utils/pagination.util';
+import { SearchDto } from 'src/shared/dto/search.dto';
+
+const paginate: PaginateFunction = paginator({ perPage: 10 });
 
 @Injectable()
 export class SubmissionsService {
@@ -10,11 +15,26 @@ export class SubmissionsService {
     private prisma: PrismaService,
     @InjectQueue('judge') private judgeQueue: Queue,
   ) {}
-  async get(userId: string) {
-    const submission = await this.prisma.submission.findMany({
-      where: { userId },
+  async get(userId: string, query: PageOptionsDto) {
+    return await paginate(
+      this.prisma.submission,
+      {
+        orderBy: {
+          createdAt: query.order,
+        },
+        where: { userId },
+      },
+      { page: query.page },
+    );
+  }
+  async search(query: SearchDto) {
+    return await this.prisma.submission.findMany({
+      where: {
+        code: {
+          contains: query.search,
+        },
+      },
     });
-    return submission;
   }
   async getById(id: string, userId: string) {
     return await this.prisma.submission.findUnique({ where: { id, userId } });
@@ -24,11 +44,7 @@ export class SubmissionsService {
       where: { id },
       include: {
         testCases: true,
-        tester: {
-          where: {
-            active: true,
-          },
-        },
+        tester: true,
       },
     });
     if (!problem || problem.draft) {
@@ -52,7 +68,7 @@ export class SubmissionsService {
     });
     await this.judgeQueue.add('judge', {
       tests: problem.testCases,
-      tester: problem.tester.at(-1),
+      tester: problem.tester,
       submission,
     });
     return submission;

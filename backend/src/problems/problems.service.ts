@@ -8,12 +8,35 @@ import {
   UpdateTestDto,
   UpdateTesterDto,
 } from './dto';
+import { SearchDto } from 'src/shared/dto/search.dto';
+import { PaginateFunction, paginator } from 'src/shared/utils/pagination.util';
+import { PageOptionsDto } from 'src/shared/dto/page-options.dto';
+
+const paginate: PaginateFunction = paginator({ perPage: 10 });
 
 @Injectable()
 export class ProblemsService {
   constructor(private prisma: PrismaService) {}
-  async get() {
-    return await this.prisma.problem.findMany({});
+  async get(query: PageOptionsDto) {
+    return await paginate(
+      this.prisma.problem,
+      {
+        orderBy: {
+          name: query.order,
+        },
+      },
+      { page: query.page },
+    );
+  }
+  async search(query: SearchDto) {
+    return await this.prisma.problem.findMany({
+      where: {
+        OR: [
+          { name: { contains: query.search } },
+          { description: { contains: query.search } },
+        ],
+      },
+    });
   }
   async getById(id: string) {
     return await this.prisma.problem.findUnique({ where: { id } });
@@ -47,14 +70,7 @@ export class ProblemsService {
     });
   }
   async create(dto: CreateProblemDto) {
-    const problem = await this.prisma.problem.create({
-      data: {
-        name: dto.name,
-        description: dto.description,
-        rating: dto.rating,
-      },
-    });
-    return problem;
+    return await this.prisma.problem.create({ data: dto });
   }
   async addTestCase(id: string, dto: AddTestDto) {
     const problem = await this.prisma.problem.findUnique({
