@@ -31,6 +31,10 @@ export class UsersController {
   get(@Query() query: PageOptionsDto) {
     return this.userService.get(query);
   }
+  @Get(':id')
+  getById(@Param('id') id: string) {
+    return this.userService.getById(id);
+  }
   @Get('search')
   async search(@Query() query: SearchDto) {
     return this.userService.search(query);

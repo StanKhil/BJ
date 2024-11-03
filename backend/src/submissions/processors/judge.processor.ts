@@ -30,11 +30,7 @@ export class JudgeConsumer extends WorkerHost {
         const testerCode = job.data.tester.code;
         const input = tests[i].input;
         const dirName = uuidv4();
-        const dirPath = join(
-          this.config.get('SUBMISSIONS_PATH'),
-          'submissions',
-          dirName,
-        );
+        const dirPath = join(this.config.get('SUBMISSIONS_PATH'), dirName);
         await mkdir(dirPath);
         await writeFile(join(dirPath, 'input.txt'), input);
         await writeFile(join(dirPath, 'output.txt'), '');

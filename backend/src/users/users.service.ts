@@ -27,6 +27,12 @@ export class UsersService {
       { page: query.page },
     );
   }
+  async getById(id: string) {
+    return await this.prisma.user.findUnique({
+      where: { id },
+      omit: { password: true },
+    });
+  }
   async search(query: SearchDto) {
     return await this.prisma.user.findMany({
       omit: {

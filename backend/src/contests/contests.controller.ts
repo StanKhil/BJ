@@ -27,6 +27,10 @@ export class ContestsController {
   async get(@GetUser('id') userId: string) {
     return await this.contestsService.get(userId);
   }
+  @Get('results/:id')
+  async getResults(@GetUser('id') userId: string, @Param('id') id: string) {
+    return await this.contestsService.getResults(id, userId);
+  }
   @Get('team/:id')
   async getByTeam(@GetUser('id') userId: string, @Param('id') id: string) {
     return await this.contestsService.getByTeam(userId, id);

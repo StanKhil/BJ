@@ -16,7 +16,9 @@ export class TeamsService {
         },
       },
       include: {
-        participants: true,
+        participants: {
+          omit: { password: true },
+        },
       },
     });
   }

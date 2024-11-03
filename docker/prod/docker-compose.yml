@@ -17,7 +17,7 @@ services:
       - 3000:3000
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - /Users/lstyle/PetPrj/BJ/backend/submissions:/Users/lstyle/PetPrj/BJ/backend/submissions
+      - ${SUBMISSIONS_PATH_HOST}:${SUBMISSIONS_PATH}
     depends_on:
       - database
       - redis

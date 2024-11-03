@@ -6,6 +6,8 @@ services:
     image: 'redis:alpine'
     ports:
       - '6379:6379'
+    volumes:
+      - redisdev:/data
   database:
     container_name: "bjdbdev"
     restart: unless-stopped
@@ -16,3 +18,8 @@ services:
       POSTGRES_DB: "nest"
       POSTGRES_USER: "admin"
       POSTGRES_PASSWORD: "admin"
+    volumes:
+      - bjdbdev:/var/lib/postgresql/data
+volumes:
+  redisdev:
+  bjdbdev:
