@@ -1,6 +1,7 @@
+import router from "@/router"
 import axios from "axios"
 import { defineStore } from "pinia"
-import { reactive, ref } from "vue"
+import { reactive } from "vue"
 
 export const useUserStore = defineStore('user', () => {
     const user = reactive({
@@ -17,6 +18,9 @@ export const useUserStore = defineStore('user', () => {
         user.role = response.data.role;
       } catch (e) {
         console.log(e);
+        if (axios.isAxiosError(e) && e.response?.status === 401) {
+          router.push("/login")
+        } 
       }
     }
     return { user, checkToken }

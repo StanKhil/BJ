@@ -2,6 +2,7 @@
 import { ref } from 'vue';
 import axios from 'axios';
 import Loader from '@/components/UI/Loader.vue';
+import router from '@/router';
 
 const loading = ref(true);
 const users = ref([]);
@@ -35,15 +36,15 @@ getUsers()
           {{user.username}} ({{ user.role }})
          </div>
          <div class="tools">
-          <button>edit</button>
-          <button>delete</button>
+          <button @click="router.push(`/admin/users/edit/${user.id}`)">edit</button>
+          <button @click="router.push(`/admin/users/delete/${user.id}`)">delete</button>
          </div>
         </div>
       </div>
     </div>
 
     <div class="create">
-      <button>create</button>
+      <button @click="router.push('/admin/users/create')">create</button>
     </div>
   </div>
 

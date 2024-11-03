@@ -7,11 +7,14 @@ import Profile from './pages/Profile.vue'
 import Login from './pages/Login.vue'
 import Problems from './pages/Problems.vue'
 import Admin from './pages/admin/Admin.vue'
-import UsersAdmin from './pages/admin/Users.vue'
+import UsersAdmin from './pages/admin/users/Users.vue'
 import GroupsAdmin from './pages/admin/Groups.vue'
 import ContestsAdmin from './pages/admin/Contests.vue'
 import ProblemsAdmin from './pages/admin/Problems.vue'
 import { useUserStore } from './stores/user.store'
+import UsersCreate from './pages/admin/users/UsersCreate.vue'
+import UsersEdit from './pages/admin/users/UsersEdit.vue'
+import UsersDelete from './pages/admin/users/UsersDelete.vue'
 
 const routes = [
   { path: '/login', component: Login, name: 'login' },
@@ -19,7 +22,10 @@ const routes = [
     path: '/admin',
     component: Admin,
     children: [
-      { path: 'users', component: UsersAdmin },
+      { path: 'users', component: UsersAdmin},
+      { path: 'users/create', component: UsersCreate },
+      { path: 'users/edit/:id', component: UsersEdit },
+      { path: 'users/delete/:id', component: UsersDelete },
       { path: 'groups', component: GroupsAdmin },
       { path: 'contests', component: ContestsAdmin },
       { path: 'problems', component: ProblemsAdmin },
