@@ -6,6 +6,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { ProblemsService } from './problems.service';
@@ -22,6 +23,8 @@ import {
   UpdateTestDto,
   UpdateTesterDto,
 } from './dto';
+import { PageOptionsDto } from 'src/shared/dto/page-options.dto';
+import { SearchDto } from 'src/shared/dto/search.dto';
 
 @ApiBearerAuth()
 @Roles(Role.ADMIN)
@@ -32,8 +35,13 @@ export class ProblemsController {
   constructor(private readonly problemsService: ProblemsService) {}
   @Roles(Role.ADMIN, Role.USER)
   @Get('')
-  async getProblems() {
-    return await this.problemsService.get();
+  async getProblems(@Query() query: PageOptionsDto) {
+    return await this.problemsService.get(query);
+  }
+  @Roles(Role.ADMIN, Role.USER)
+  @Get('search')
+  async search(@Query() query: SearchDto) {
+    return await this.problemsService.search(query);
   }
   @Roles(Role.ADMIN, Role.USER)
   @Get(':id')

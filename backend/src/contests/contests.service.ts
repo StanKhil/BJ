@@ -21,6 +21,56 @@ export class ContestsService {
       },
     });
   }
+  async getResults(id: string, userId: string) {
+    const contest = await this.prisma.contest.findUnique({
+      where: {
+        id,
+        team: {
+          participants: {
+            some: {
+              id: userId,
+            },
+          },
+        },
+      },
+    });
+    if (!contest) {
+      throw new BadRequestException(
+        'contest with that id and user doesnt exist',
+      );
+    }
+    const users = await this.prisma.user.findMany({
+      where: {
+        teams: {
+          some: {
+            id: contest.teamId,
+          },
+        },
+      },
+      include: {
+        submissions: {
+          orderBy: {
+            createdAt: 'desc',
+          },
+          where: {
+            createdAt: {
+              lte: contest.timeEnd,
+              gte: contest.createdAt,
+            },
+            problem: {
+              contests: {
+                some: {
+                  id: contest.id,
+                },
+              },
+            },
+          },
+          take: 1,
+        },
+      },
+    });
+    return users;
+  }
   async getByTeam(userId: string, teamId: string) {
     return await this.prisma.contest.findMany({
       where: {
