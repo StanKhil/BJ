@@ -5,7 +5,7 @@ import { ValidationPipe } from '@nestjs/common';
 import { PrismaClientExceptionFilter } from './shared/filters/prisma-exception.filter';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, { cors: true });
   app.setGlobalPrefix('api');
   const config = new DocumentBuilder()
     .setTitle('BJ')

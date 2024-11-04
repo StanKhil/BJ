@@ -19,6 +19,7 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { PageOptionsDto } from 'src/shared/dto/page-options.dto';
 import { SearchDto } from 'src/shared/dto/search.dto';
+import { GetUser } from 'src/auth/decorators/get-user.decorator';
 
 @ApiBearerAuth()
 @Roles(Role.ADMIN)
@@ -30,6 +31,11 @@ export class UsersController {
   @Get('')
   get(@Query() query: PageOptionsDto) {
     return this.userService.get(query);
+  }
+  @Roles(Role.ADMIN, Role.USER)
+  @Get('me')
+  async getMe(@GetUser('id') id: string) {
+    return await this.userService.getById(id);
   }
   @Get(':id')
   getById(@Param('id') id: string) {
