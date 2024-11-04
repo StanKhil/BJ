@@ -1,20 +1,25 @@
 import { createWebHistory, createRouter } from 'vue-router'
 
 import Home from './pages/Home.vue'
-import AboutUs from './pages/AboutUs.vue'
 import Groups from './pages/Groups.vue'
 import Profile from './pages/Profile.vue'
 import Login from './pages/Login.vue'
 import Problems from './pages/Problems.vue'
 import Admin from './pages/admin/Admin.vue'
 import UsersAdmin from './pages/admin/users/Users.vue'
-import GroupsAdmin from './pages/admin/Groups.vue'
-import ContestsAdmin from './pages/admin/Contests.vue'
-import ProblemsAdmin from './pages/admin/Problems.vue'
+import GroupsAdmin from './pages/admin/groups/Groups.vue'
+import ContestsAdmin from './pages/admin/contests/Contests.vue'
+import ProblemsAdmin from './pages/admin/problems/Problems.vue'
 import { useUserStore } from './stores/user.store'
 import UsersCreate from './pages/admin/users/UsersCreate.vue'
 import UsersEdit from './pages/admin/users/UsersEdit.vue'
 import UsersDelete from './pages/admin/users/UsersDelete.vue'
+import GroupsCreate from './pages/admin/groups/GroupsCreate.vue'
+import GroupsEdit from './pages/admin/groups/GroupsEdit.vue'
+import GroupsDelete from './pages/admin/groups/GroupsDelete.vue'
+import ContestsCreate from './pages/admin/contests/ContestsCreate.vue'
+import ContestsEdit from './pages/admin/contests/ContestsEdit.vue'
+import ContestsDelete from './pages/admin/contests/ContestsDelete.vue'
 
 const routes = [
   { path: '/login', component: Login, name: 'login' },
@@ -27,12 +32,17 @@ const routes = [
       { path: 'users/edit/:id', component: UsersEdit },
       { path: 'users/delete/:id', component: UsersDelete },
       { path: 'groups', component: GroupsAdmin },
+      { path: 'groups/create', component: GroupsCreate },
+      { path: 'groups/edit/:id', component: GroupsEdit },
+      { path: 'groups/delete/:id', component: GroupsDelete },
       { path: 'contests', component: ContestsAdmin },
+      { path: 'contests/create', component: ContestsCreate },
+      { path: 'contests/edit/:id', component: ContestsEdit },
+      { path: 'contests/delete/:id', component: ContestsDelete },
       { path: 'problems', component: ProblemsAdmin },
     ]
   },
   
-  { path: '/about', component: AboutUs },
   { path: '/groups', component: Groups },
   { path: '/profile', component: Profile },
   { path: '/', component: Home },
