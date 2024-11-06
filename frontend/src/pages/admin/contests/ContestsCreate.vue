@@ -5,13 +5,20 @@ import { useRouter } from 'vue-router';
 
 const router = useRouter();
 
+const temname=ref("");
+const teamid=ref("");
 const name = ref('');
+const problems=ref([]);
+const timeEnd=ref("");
 const create = async () => {
   try {
-    const response = await axios.post('/teams', {
+    const response = await axios.post('/contests', {
+      id:teamid.value,
       name: name.value,
+      problems: problems.value,
+      timeEnd: timeEnd.value
     })
-    await router.push('/admin/groups')
+    await router.push('/admin/contests')
   } catch (e) {
     console.log(e)
   }
@@ -25,7 +32,9 @@ const create = async () => {
     </div>
     <form class="main" @submit.prevent="create">
       <div class="input-container">
-        <input v-model="name" placeholder="Enter your groupname" required>
+        <input v-model="teamname" placeholder="Enter your teamname" required>
+        <input v-model="name" placeholder="Enter your contestname" required>
+        <input v-model="timeEnd" placeholder="Enter your timeEnd" required type="date">
       </div>
       <button type="submit">Enter</button>
     </form>

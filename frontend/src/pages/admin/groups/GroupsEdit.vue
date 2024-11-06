@@ -17,6 +17,18 @@ const edit = async () => {
     console.log(e)
   }
 }
+
+const group = async () => {
+  try {
+    const response = await axios.get(`/teams/${route.params.id}`);
+    name.value = response.data.name;
+    console.log(response.name)
+  } catch(e) {
+    console.log(e);
+  }
+}
+
+group()
 </script>
 
 <template>

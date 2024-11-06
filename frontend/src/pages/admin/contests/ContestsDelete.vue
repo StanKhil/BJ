@@ -5,10 +5,10 @@ import { useRoute, useRouter } from 'vue-router';
 const router = useRouter();
 const route = useRoute()
 
-const deleteUser = async () => {
+const deleteContest = async () => {
   try {
-    const response = await axios.delete(`/teams/${route.params.id}`)
-    await router.push('/admin/groups')
+    const response = await axios.delete(`/contests/${route.params.id}`)
+    await router.push('/admin/contests')
   } catch (e) {
     console.log(e)
   }
@@ -20,7 +20,7 @@ const deleteUser = async () => {
     <div class="title">
       <h3>Delete</h3>
     </div>
-    <button @click="deleteUser">Delete</button>
+    <button @click="deleteContest">Delete</button>
   </div>
 </template>
 

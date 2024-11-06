@@ -7,16 +7,34 @@ const router = useRouter();
 const route = useRoute()
 
 const name = ref('');
+const problems=ref([]);
+const timeEnd=ref("");
 const edit = async () => {
   try {
-    const response = await axios.patch(`/teams/${route.params.id}`, {
+    const response = await axios.patch(`/contests/${route.params.id}`, {
         name: name.value,
+        problems: problems.value,
+        timeEnd: timeEnd.value
     })
-    await router.push('/admin/groups')
+    await router.push('/admin/contests')
   } catch (e) {
     console.log(e)
   }
 }
+
+const contest = async () => {
+  try {
+    const response = await axios.get(`/contests/${route.params.id}`);
+    name.value = response.data.name;
+    problems.value=response.data.name;
+    timeEnd.value=response.data.timeEnd;
+    console.log(response.name)
+  } catch(e) {
+    console.log(e);
+  }
+}
+
+contest()
 </script>
 
 <template>
@@ -26,7 +44,9 @@ const edit = async () => {
     </div>
     <form class="main" @submit.prevent="edit">
       <div class="input-container">
-        <input v-model="name" placeholder="Enter new group name" required>
+        <input v-model="teamname" placeholder="Enter your teamname" required>
+        <input v-model="name" placeholder="Enter your contestname" required>
+        <input v-model="timeEnd" placeholder="Enter your timeEnd" required type="date">
       </div>
       <button type="submit">Enter</button>
     </form>
