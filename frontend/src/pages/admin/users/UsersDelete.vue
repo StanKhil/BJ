@@ -1,24 +1,35 @@
 <script setup>
 import axios from 'axios';
+import { ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
 const router = useRouter();
-const route = useRoute()
+const route = useRoute();
+const username = ref('');
 
+const user = async () => {
+  try {
+    const response = await axios.get(`/users/${route.params.id}`);
+    username.value = response.data.username;
+  } catch(e) {
+    console.log(e);
+  }
+}
 const deleteUser = async () => {
   try {
-    const response = await axios.delete(`/users/${route.params.id}`)
+    await axios.delete(`/users/${route.params.id}`)
     await router.push('/admin/users')
   } catch (e) {
     console.log(e)
   }
 }
+user();
 </script>
 
 <template>
   <div class="container">
     <div class="title">
-      <h3>Delete</h3>
+      <h3>Delete: {{ username }}</h3>
     </div>
     <button @click="deleteUser">Delete</button>
   </div>

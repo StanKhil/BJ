@@ -9,7 +9,7 @@ const users = ref([]);
 const getUsers = async () => {
   try {
     const response = await axios.get('/users');
-    users.value = response.data;
+    users.value = response.data.data;
   } catch(e) {
     console.log(e)
   } finally {

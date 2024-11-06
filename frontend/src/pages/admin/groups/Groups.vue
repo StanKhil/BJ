@@ -32,7 +32,7 @@ getGroups()
       </div>
       <div class="group-list">
         <div v-for="group in groups" class="group">
-         <div class="username">
+         <div class="groupname">
           {{group.name}}
          </div>
          <div class="tools">

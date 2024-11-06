@@ -8,7 +8,7 @@ const problems = ref([]);
 const getProblems = async () => {
   try {
     const response = await axios.get('/problems');
-    problems.value = response.data;
+    problems.value = response.data.data;
   } catch(e) {
     console.log(e)
   } finally {

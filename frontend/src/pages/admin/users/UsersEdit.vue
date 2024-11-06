@@ -9,18 +9,32 @@ const route = useRoute()
 const username = ref('');
 const password = ref('');
 const role = ref('');
+const user = async () => {
+  try {
+    const response = await axios.get(`/users/${route.params.id}`);
+    username.value = response.data.username;
+    role.value = response.data.role;
+  } catch(e) {
+    console.log(e);
+  }
+}
 const edit = async () => {
   try {
-    const response = await axios.patch(`/users/${route.params.id}`, {
+    const data = {
       username: username.value,
-      password: password.value,
       role: role.value
-    })
+    }
+    if (password.value) {
+      data['password'] = password.value;
+    }
+    await axios.patch(`/users/${route.params.id}`, data);
     await router.push('/admin/users')
   } catch (e) {
     console.log(e)
   }
 }
+
+user();
 </script>
 
 <template>
@@ -31,12 +45,12 @@ const edit = async () => {
     <form class="main" @submit.prevent="edit">
       <div class="input-container">
         <input v-model="username" placeholder="Enter your username" required>
-        <input v-model="password" placeholder="Enter your password" type="password" required>
         <select v-model="role" required>
           <option disabled value="">Please select one</option>
           <option>USER</option>
           <option>ADMIN</option>
         </select>
+        <input v-model="password" placeholder="Enter your password" type="password">
       </div>
       <button type="submit">Enter</button>
     </form>
