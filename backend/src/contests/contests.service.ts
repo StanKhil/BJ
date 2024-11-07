@@ -1,13 +1,42 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateContestDto, UpdateContestDto } from './dto';
+import { SearchDto } from 'src/shared/dto/search.dto';
+import { PaginateFunction, paginator } from 'src/shared/utils/pagination.util';
+import { PageOptionsDto } from 'src/shared/dto/page-options.dto';
+
+const paginate: PaginateFunction = paginator({ perPage: 10 });
 
 @Injectable()
 export class ContestsService {
   constructor(private prisma: PrismaService) {}
-  async get(userId: string) {
+  async get(query: PageOptionsDto, userId: string) {
+    return await paginate(
+      this.prisma.contest,
+      {
+        where: {
+          team: {
+            participants: {
+              some: {
+                id: userId,
+              },
+            },
+          },
+        },
+        orderBy: {
+          name: query.order,
+        },
+        include: {
+          problems: true,
+        },
+      },
+      { page: query.page },
+    );
+  }
+  async search(query: SearchDto, userId: string) {
     return await this.prisma.contest.findMany({
       where: {
+        name: { contains: query.search },
         team: {
           participants: {
             some: {
@@ -15,9 +44,6 @@ export class ContestsService {
             },
           },
         },
-      },
-      include: {
-        problems: true,
       },
     });
   }

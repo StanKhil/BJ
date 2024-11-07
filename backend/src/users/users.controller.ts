@@ -34,11 +34,7 @@ export class UsersController {
   }
   @Roles(Role.ADMIN, Role.USER)
   @Get('me')
-  async getMe(@GetUser('id') id: string) {
-    return await this.userService.getById(id);
-  }
-  @Get(':id')
-  getById(@Param('id') id: string) {
+  getMe(@GetUser('id') id: string) {
     return this.userService.getById(id);
   }
   @Get('search')
@@ -56,5 +52,9 @@ export class UsersController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.userService.remove(id);
+  }
+  @Get(':id')
+  getById(@Param('id') id: string) {
+    return this.userService.getById(id);
   }
 }
