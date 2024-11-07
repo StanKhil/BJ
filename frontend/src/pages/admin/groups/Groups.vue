@@ -9,7 +9,7 @@ const groups = ref([]);
 const getGroups = async () => {
   try {
     const response = await axios.get('/teams');
-    groups.value = response.data;
+    groups.value = response.data.data;
   } catch(e) {
     console.log(e)
   } finally {

@@ -9,7 +9,7 @@ const contests = ref([]);
 const getContests = async () => {
   try {
     const response = await axios.get('/contests');
-    contests.value = response.data;
+    contests.value = response.data.data;
   } catch(e) {
     console.log(e)
   } finally {

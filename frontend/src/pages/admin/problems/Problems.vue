@@ -2,6 +2,7 @@
 import { ref } from 'vue';
 import axios from 'axios';
 import Loader from '@/components/UI/Loader.vue';
+import router from '@/router';
 
 const loading = ref(true);
 const problems = ref([]);
@@ -35,15 +36,15 @@ getProblems()
           {{problem.name}} ({{ problem.draft }}) ({{ problem.rating }})
          </div>
          <div class="tools">
-          <button>edit</button>
-          <button>delete</button>
+          <button @click="router.push(`/admin/problems/edit/${problem.id}`)">edit</button>
+          <button @click="router.push(`/admin/problems/delete/${problem.id}`)">delete</button>
          </div>
         </div>
       </div>
     </div>
 
     <div class="create">
-      <button>create</button>
+      <button @click="router.push('/admin/problems/create')">create</button>
     </div>
   </div>
 

@@ -5,23 +5,46 @@ import { useRouter } from 'vue-router';
 
 const router = useRouter();
 
-const temname=ref("");
-const teamid=ref("");
+const teams = ref([]);
+const teamid = ref("");
 const name = ref('');
-const problems=ref([]);
-const timeEnd=ref("");
+const problems = ref([]);
+const timeEnd = ref("");
+const search=ref("");
+
+
 const create = async () => {
   try {
     const response = await axios.post('/contests', {
-      id:teamid.value,
+      teamId: teamid.value,
       name: name.value,
       problems: problems.value,
       timeEnd: timeEnd.value
-    })
-    await router.push('/admin/contests')
+    });
+    await router.push('/admin/contests');
   } catch (e) {
-    console.log(e)
+    console.log(e);
   }
+};
+
+const searchTeams = async (event) => {
+  try {
+    const response = await axios.get("/teams/search",{
+        params:{
+            search:event.target.value
+        }
+    });
+    teams.value=response.data
+  } catch (e) {
+    console.log(e);
+  }
+};
+
+
+const selectTeam = async(id,name)=>{
+    teamid.value=id;
+    teams.value=[];
+    search.value=name;
 }
 </script>
 
@@ -32,7 +55,16 @@ const create = async () => {
     </div>
     <form class="main" @submit.prevent="create">
       <div class="input-container">
-        <input v-model="teamname" placeholder="Enter your teamname" required>
+        <div class="search-bar">
+            <input @input="searchTeams" type="text" placeholder="Search teams" />
+        </div>
+          <div class="search-teams">
+              <div style="padding: 8px;border: 1px gray solid; cursor: pointer;"  v-for="team in teams" :key="team.id" @click="selectTeam(team.id,team.name)">
+                  {{ team.name }}
+              </div>
+          </div>
+
+
         <input v-model="name" placeholder="Enter your contestname" required>
         <input v-model="timeEnd" placeholder="Enter your timeEnd" required type="date">
       </div>
@@ -76,5 +108,10 @@ select {
 .main {
   display: flex;
   flex-direction: column;
+}
+.search-teams  {
+    position: absolute;
+    background-color: white;
+    z-index: 9999;
 }
 </style>

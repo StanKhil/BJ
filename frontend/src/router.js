@@ -20,6 +20,9 @@ import GroupsDelete from './pages/admin/groups/GroupsDelete.vue'
 import ContestsCreate from './pages/admin/contests/ContestsCreate.vue'
 import ContestsEdit from './pages/admin/contests/ContestsEdit.vue'
 import ContestsDelete from './pages/admin/contests/ContestsDelete.vue'
+import ProblemsCreate from './pages/admin/problems/ProblemsCreate.vue'
+import ProblemsEdit from './pages/admin/problems/ProblemsEdit.vue'
+import ProblemsDelete from './pages/admin/problems/ProblemsDelete.vue'
 
 const routes = [
   { path: '/login', component: Login, name: 'login' },
@@ -40,6 +43,9 @@ const routes = [
       { path: 'contests/edit/:id', component: ContestsEdit },
       { path: 'contests/delete/:id', component: ContestsDelete },
       { path: 'problems', component: ProblemsAdmin },
+      { path: 'problems/create', component: ProblemsCreate },
+      { path: 'problems/edit/:id', component: ProblemsEdit },
+      { path: 'problems/delete/:id', component: ProblemsDelete },
     ]
   },
   
