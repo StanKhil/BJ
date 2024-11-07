@@ -6,6 +6,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { ContestsService } from './contests.service';
@@ -16,6 +17,8 @@ import { JwtGuard } from 'src/auth/guards/jwt.guard';
 import { RolesGuard } from 'src/auth/guards/roles.guard';
 import { CreateContestDto, UpdateContestDto } from './dto';
 import { GetUser } from 'src/auth/decorators/get-user.decorator';
+import { SearchDto } from 'src/shared/dto/search.dto';
+import { PageOptionsDto } from 'src/shared/dto/page-options.dto';
 
 @ApiBearerAuth()
 @UseGuards(JwtGuard, RolesGuard)
@@ -24,8 +27,8 @@ import { GetUser } from 'src/auth/decorators/get-user.decorator';
 export class ContestsController {
   constructor(private readonly contestsService: ContestsService) {}
   @Get('')
-  async get(@GetUser('id') userId: string) {
-    return await this.contestsService.get(userId);
+  async get(@GetUser('id') userId: string, @Query() query: PageOptionsDto) {
+    return await this.contestsService.get(query, userId);
   }
   @Get('results/:id')
   async getResults(@GetUser('id') userId: string, @Param('id') id: string) {
@@ -34,6 +37,10 @@ export class ContestsController {
   @Get('team/:id')
   async getByTeam(@GetUser('id') userId: string, @Param('id') id: string) {
     return await this.contestsService.getByTeam(userId, id);
+  }
+  @Get('search')
+  async search(@Query() query: SearchDto, @GetUser('id') userId: string) {
+    return await this.contestsService.search(query, userId);
   }
   @Get(':id')
   async getById(@GetUser('id') userId: string, @Param('id') id: string) {

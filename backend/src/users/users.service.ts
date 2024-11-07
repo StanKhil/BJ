@@ -35,13 +35,13 @@ export class UsersService {
   }
   async search(query: SearchDto) {
     return await this.prisma.user.findMany({
-      omit: {
-        password: true,
-      },
       where: {
         username: {
           contains: query.search,
         },
+      },
+      omit: {
+        password: true,
       },
     });
   }
