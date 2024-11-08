@@ -7,11 +7,11 @@ const router = useRouter()
 const route = useRoute()
 const users = ref([])
 const participants = ref([])
-const search = ref('')
+const inputUserSearch = ref(null)
 const name = ref('');
 const edit = async () => {
   try {
-    await axios.post('/teams', {
+    await axios.patch(`/teams/${route.params.id}`, {
       name: name.value,
       participants: participants.value.map((participant) => participant.id),
     })
@@ -47,14 +47,14 @@ const getTeams = async () => {
   }
 }
 const selectUser = async (participant)=>{
-
   if (participants.value.find((p) => p.id === participant.id)) {
+    inputUserSearch.value.value = ""
     users.value = [];
     return
   }
   participants.value.push(participant);
   users.value = [];
-  search.value = "";
+  inputUserSearch.value.value = ""
 }
 const removeUser = async(user)=>{
     participants.value = participants.value.filter((participant) => {
@@ -67,14 +67,14 @@ getTeams()
 <template>
   <div class="container">
     <div class="title">
-      <h3>Create</h3>
+      <h3>Edit</h3>
     </div>
-    <form class="main" @submit.prevent="create">
+    <form class="main" @submit.prevent="edit">
       <div class="input-container">
         <input v-model="name" placeholder="Enter your groupname" required>
         <div class="participant-container">
           <p>Add Users</p>
-          <input @input="searchUser" v-model="search" placeholder="search user">
+          <input @input="searchUser" placeholder="search user" ref="inputUserSearch">
           <div class="search-teams">
               <div class="search-element" v-for="user in users" :key="user.id" @click="selectUser(user)">
                   {{ user.username }}

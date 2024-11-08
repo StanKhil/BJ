@@ -9,16 +9,17 @@ const teams = ref([]);
 const teamid = ref("");
 const name = ref('');
 const problems = ref([]);
+const searchedProblems = ref([]);
 const timeEnd = ref("");
-const search = ref("");
-
+const searchProblemInput = ref(null);
+const searchTeamInput = ref(null);
 
 const create = async () => {
   try {
     await axios.post('/contests', {
       teamId: teamid.value,
       name: name.value,
-      problems: problems.value,
+      problems: problems.value.map((prpblem) => prpblem.id),
       timeEnd: timeEnd.value
     });
     await router.push('/admin/contests');
@@ -34,7 +35,7 @@ const searchTeams = async (event) => {
             search:event.target.value
         }
     });
-    teams.value=response.data
+    teams.value = response.data
   } catch (e) {
     console.log(e);
   }
@@ -43,8 +44,37 @@ const searchTeams = async (event) => {
 const selectTeam = async(id,name)=>{
     teamid.value = id;
     teams.value = [];
-    search.value = name;
-    teamInput.value.value = name;
+    searchTeamInput.value.value = name;
+}
+const searchProblem = async (event) => {
+  if (!event.target.value) {
+    searchedProblems.value = []
+    return
+  }
+  try {
+    const response = await axios.get("/problems/search",{
+        params:{
+            search: event.target.value
+        }
+    });
+    searchedProblems.value = response.data
+  } catch (e) {
+    console.log(e);
+  }
+};
+const selectProblem = async(problem)=>{
+  if (problems.value.find((p) => p.id === problem.id)) {
+    searchedProblems.value = [];
+    return
+  }
+  problems.value.push(problem);
+  searchedProblems.value = [];
+  searchProblemInput.value.value = "";
+}
+const removeProblem = async(problem)=>{
+    problems.value = problems.value.filter((p) => {
+      return p.id != problem.id;
+    });
 }
 </script>
 
@@ -56,15 +86,30 @@ const selectTeam = async(id,name)=>{
     <form class="main" @submit.prevent="create">
       <div class="input-container">
         <div class="search-bar">
-            <input @input="searchTeams" type="text" placeholder="Search teams" ref="teamInput" />
+            <input @input="searchTeams" type="text" placeholder="Search teams" ref="searchTeamInput" />
         </div>
-          <div class="search-teams">
-              <div class="search-element"  v-for="team in teams" :key="team.id" @click="selectTeam(team.id,team.name)">
-                  {{ team.name }}
+        <div class="search-teams">
+            <div class="search-element"  v-for="team in teams" :key="team.id" @click="selectTeam(team.id,team.name)">
+                {{ team.name }}
+            </div>
+        </div>
+        <div class="problem-container">
+          <p>Add Problem</p>
+          <input @input="searchProblem" placeholder="search problem" ref="searchProblemInput">
+          <div class="search-problems">
+              <div class="search-element" v-for="problem in searchedProblems" :key="problem.id" @click="selectProblem(problem)">
+                  {{ problem.name }}
               </div>
           </div>
+          <div class="container-add" v-if="problems.length > 0">
+            <div class="problem-element" v-for="problem in problems" :key="problem.id" @click="removeProblem(problem)">
+              {{ problem.name }}
+            </div>
+          </div>
+        </div>
         <input v-model="name" placeholder="Enter your contestname" required>
         <input v-model="timeEnd" placeholder="Enter your timeEnd" required type="date">
+
       </div>
       <button type="submit">Enter</button>
     </form>
@@ -121,5 +166,30 @@ select {
   border-radius: 4px;
   padding: 4px;
   cursor: pointer;
+}
+.container-add {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  padding: 8px;
+  border: 1px solid #5083cf;
+  border-radius: 8px;
+}
+.problem-container {
+  padding: 8px;
+  border: 1px solid #5083cf;
+  border-radius: 8px;
+}
+.problem-container > input, p {
+  margin-top: 2px;
+}
+.problem-element {
+  border: 1px solid black;
+  background-color:lightgray;
+  border-radius: 12px;
+  padding: 8px;
+  cursor: pointer;
+  margin-right: 4px;
+  margin-bottom: 4px;
 }
 </style>

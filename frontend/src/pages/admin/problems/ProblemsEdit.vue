@@ -2,6 +2,7 @@
 import { ref } from 'vue';
 import axios from 'axios';
 import { useRoute, useRouter } from 'vue-router';
+import MarkdownRenderer from '@/components/MarkdownRenderer.vue';
 
 const router = useRouter();
 const route = useRoute()
@@ -11,6 +12,7 @@ const description = ref("");
 const draft = ref(false)
 const rating = ref("")
 const select = ref("")
+const write = ref(false)
 const problem = async () => {
   try {
     const response = await axios.get(`/problems/${route.params.id}`);
@@ -43,12 +45,15 @@ problem();
 <template>
   <div class="container">
     <div class="title">
-      <h3>Create</h3>
+      <h3>Edit</h3>
     </div>
     <form class="main" @submit.prevent="edit">
       <div class="input-container">
         <input v-model="name" placeholder="Enter your problem name" required>
-        <input v-model="description" placeholder="Enter your description" required>
+        <div class="description-container">
+          <textarea v-model="description" placeholder="Enter your description" required v-if="write" @blur="write = false"></textarea>
+          <MarkdownRenderer class="description" :source="description" @click="write = true" v-else></MarkdownRenderer>
+        </div>
         <select v-model="select" required>
           <option disabled value="">Draft</option>
           <option>true</option>
@@ -92,6 +97,15 @@ input {
     linear-gradient(#5083cf, #5083cf) center bottom 5px /calc(100% - 10px) 1px no-repeat;
     border: 0;
 }
+textarea {
+  margin-top: 16px;
+  resize: none;
+  border: #5083cf 1px solid;
+  height: 184px;
+  width: 100%;
+  position: relative;
+}
+
 select {
   width: 100%;
   padding: 12px;
@@ -102,4 +116,15 @@ select {
   display: flex;
   flex-direction: column;
 }
+.description-container {
+  box-sizing: border-box;
+}
+.description {
+  margin-top: 16px;
+  overflow-y: auto;
+  border: #5083cf 1px solid;
+  cursor: pointer;
+  max-height: 100%;
+}
+
 </style>

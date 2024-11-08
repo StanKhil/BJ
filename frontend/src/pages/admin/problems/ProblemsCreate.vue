@@ -2,14 +2,17 @@
 import { ref } from 'vue';
 import axios from 'axios';
 import { useRouter } from 'vue-router';
+import MarkdownRenderer from '@/components/MarkdownRenderer.vue';
 
 const router = useRouter();
 
 const name = ref('');
-const description = ref("");
+const description = ref("Write your description");
 const draft = ref(false)
 const rating = ref("")
 const select = ref("")
+const write = ref(false)
+
 const create = async () => {
   try {
     if(select.value==="true"){
@@ -17,7 +20,7 @@ const create = async () => {
     }else{
         draft.value=false;
     }
-    const response = await axios.post('/problems', {
+    await axios.post('/problems', {
       name: name.value,
       description: description.value,
       draft: draft.value,
@@ -38,7 +41,10 @@ const create = async () => {
     <form class="main" @submit.prevent="create">
       <div class="input-container">
         <input v-model="name" placeholder="Enter your problem name" required>
-        <input v-model="description" placeholder="Enter your description" required>
+        <div class="description-container">
+          <textarea v-model="description" placeholder="Enter your description" required v-if="write" @blur="write = false"></textarea>
+          <MarkdownRenderer class="description" :source="description" @click="write = true" v-else></MarkdownRenderer>
+        </div>
         <select v-model="select" required>
           <option disabled value="">Draft</option>
           <option>true</option>
@@ -78,10 +84,17 @@ input {
     padding: 12px;
     width: 100%;
     margin-top: 16px;
-    background: 
-    linear-gradient(#5083cf, #5083cf) center bottom 5px /calc(100% - 10px) 1px no-repeat;
-    border: 0;
+    border: #5083cf 1px solid;
 }
+textarea {
+  margin-top: 16px;
+  resize: none;
+  border: #5083cf 1px solid;
+  height: 184px;
+  width: 100%;
+  position: relative;
+}
+
 select {
   width: 100%;
   padding: 12px;
@@ -92,4 +105,16 @@ select {
   display: flex;
   flex-direction: column;
 }
+.description-container {
+  box-sizing: content-box;
+  height: 200px;
+}
+.description {
+  margin-top: 16px;
+  overflow-y: auto;
+  border: #5083cf 1px solid;
+  height: 100%;
+  cursor: pointer;
+}
+
 </style>

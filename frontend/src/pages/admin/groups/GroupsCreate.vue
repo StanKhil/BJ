@@ -6,7 +6,7 @@ import { useRouter } from 'vue-router';
 const router = useRouter()
 const users = ref([])
 const participants = ref([])
-const search = ref('')
+const inputUserSearch = ref(null)
 const name = ref('');
 const create = async () => {
   try {
@@ -37,12 +37,13 @@ const searchUser = async (event) => {
 };
 const selectUser = async(participant)=>{
   if (participants.value.find((p) => p.id === participant.id)) {
+    inputUserSearch.value.value = ""
     users.value = [];
     return
   }
   participants.value.push(participant);
   users.value = [];
-  search.value = "";
+  inputUserSearch.value.value = ""
 }
 const removeUser = async(user)=>{
     participants.value = participants.value.filter((participant) => {
@@ -61,7 +62,7 @@ const removeUser = async(user)=>{
         <input v-model="name" placeholder="Enter your groupname" required>
         <div class="participant-container">
           <p>Add Users</p>
-          <input @input="searchUser" v-model="search" placeholder="search user">
+          <input @input="searchUser" placeholder="search user" ref="inputUserSearch">
           <div class="search-teams">
               <div class="search-element" v-for="user in users" :key="user.id" @click="selectUser(user)">
                   {{ user.username }}
