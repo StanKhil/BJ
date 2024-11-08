@@ -44,13 +44,13 @@ user();
     </div>
     <form class="main" @submit.prevent="edit">
       <div class="input-container">
-        <input v-model="username" placeholder="Enter your username" required>
+        <input v-model="username" placeholder="Edit users username" required>
         <select v-model="role" required>
           <option disabled value="">Please select one</option>
           <option>USER</option>
           <option>ADMIN</option>
         </select>
-        <input v-model="password" placeholder="Enter your password" type="password">
+        <input v-model="password" placeholder="Update users password(not required)" type="password">
       </div>
       <button type="submit">Enter</button>
     </form>

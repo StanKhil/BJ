@@ -4,18 +4,18 @@ import axios from 'axios';
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
-
+const teamInput = ref(null);
 const teams = ref([]);
 const teamid = ref("");
 const name = ref('');
 const problems = ref([]);
 const timeEnd = ref("");
-const search=ref("");
+const search = ref("");
 
 
 const create = async () => {
   try {
-    const response = await axios.post('/contests', {
+    await axios.post('/contests', {
       teamId: teamid.value,
       name: name.value,
       problems: problems.value,
@@ -40,11 +40,11 @@ const searchTeams = async (event) => {
   }
 };
 
-
 const selectTeam = async(id,name)=>{
-    teamid.value=id;
-    teams.value=[];
-    search.value=name;
+    teamid.value = id;
+    teams.value = [];
+    search.value = name;
+    teamInput.value.value = name;
 }
 </script>
 
@@ -56,15 +56,13 @@ const selectTeam = async(id,name)=>{
     <form class="main" @submit.prevent="create">
       <div class="input-container">
         <div class="search-bar">
-            <input @input="searchTeams" type="text" placeholder="Search teams" />
+            <input @input="searchTeams" type="text" placeholder="Search teams" ref="teamInput" />
         </div>
           <div class="search-teams">
-              <div style="padding: 8px;border: 1px gray solid; cursor: pointer;"  v-for="team in teams" :key="team.id" @click="selectTeam(team.id,team.name)">
+              <div class="search-element"  v-for="team in teams" :key="team.id" @click="selectTeam(team.id,team.name)">
                   {{ team.name }}
               </div>
           </div>
-
-
         <input v-model="name" placeholder="Enter your contestname" required>
         <input v-model="timeEnd" placeholder="Enter your timeEnd" required type="date">
       </div>
@@ -77,6 +75,7 @@ const selectTeam = async(id,name)=>{
 .input-container {
   width: 100%;
   padding: 4px;
+  position: relative;
 }
 .main {
   height: 100%;
@@ -113,5 +112,14 @@ select {
     position: absolute;
     background-color: white;
     z-index: 9999;
+    width: 100%;
+}
+.search-element {
+  width: 100%;
+  border: 1px solid #5083cf;
+  margin-top: 1px;
+  border-radius: 4px;
+  padding: 4px;
+  cursor: pointer;
 }
 </style>
