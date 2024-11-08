@@ -52,6 +52,11 @@ export class TeamsService {
           },
         },
       },
+      include: {
+        participants: {
+          omit: { password: true },
+        },
+      },
     });
   }
   async create(userId: string, dto: CreateTeamDto) {
