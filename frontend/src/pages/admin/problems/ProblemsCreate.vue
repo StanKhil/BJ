@@ -7,7 +7,19 @@ import MarkdownRenderer from '@/components/MarkdownRenderer.vue';
 const router = useRouter();
 
 const name = ref('');
-const description = ref("Write your description");
+const description = ref(`
+# Sum
+given two numbers 0<=a<=1000, 0<=b<=1000
+Return a + b
+
+### Example
+
+| Input | Output |
+| -------- | ------- |
+| 1 1 | 2 |
+### Explanation
+1 + 1 = 2
+`);
 const draft = ref(false)
 const rating = ref("")
 const select = ref("")
@@ -79,6 +91,7 @@ const create = async () => {
   flex-direction: column;
   height: 100%;
   width: 100%;
+  overflow: auto;
 }
 input {
     padding: 12px;
@@ -104,10 +117,6 @@ select {
 .main {
   display: flex;
   flex-direction: column;
-}
-.description-container {
-  box-sizing: content-box;
-  height: 200px;
 }
 .description {
   margin-top: 16px;

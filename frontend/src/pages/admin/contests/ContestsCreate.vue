@@ -1,10 +1,9 @@
 <script setup>
-import { ref } from 'vue';
+import { nextTick, ref } from 'vue';
 import axios from 'axios';
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
-const teamInput = ref(null);
 const teams = ref([]);
 const teamid = ref("");
 const name = ref('');
@@ -29,6 +28,11 @@ const create = async () => {
 };
 
 const searchTeams = async (event) => {
+  if (!event.target.value) {
+    teams.value = []
+    searchTeamInput.value.value = "";
+    return
+  }
   try {
     const response = await axios.get("/teams/search",{
         params:{
@@ -40,11 +44,16 @@ const searchTeams = async (event) => {
     console.log(e);
   }
 };
-
-const selectTeam = async(id,name)=>{
-    teamid.value = id;
-    teams.value = [];
-    searchTeamInput.value.value = name;
+const selectTeam = async (team)=>{
+  teamid.value = team.id;
+  teams.value = [];
+  searchTeamInput.value.value = team.name;
+}
+const blurTeam = () => {
+  if (teamid.value) return;
+  teamid.value = "";
+  teams.value = [];
+  searchTeamInput.value.value = "";
 }
 const searchProblem = async (event) => {
   if (!event.target.value) {
@@ -79,17 +88,17 @@ const removeProblem = async(problem)=>{
 </script>
 
 <template>
-  <div class="container">
+  <div class="container" @click.stop="blurTeam">
     <div class="title">
       <h3>Create</h3>
     </div>
     <form class="main" @submit.prevent="create">
       <div class="input-container">
-        <div class="search-bar">
-            <input @input="searchTeams" type="text" placeholder="Search teams" ref="searchTeamInput" />
+        <div class="search-bar" @click.stop>
+            <input @input="searchTeams" type="text" placeholder="Search teams" ref="searchTeamInput" required/>
         </div>
-        <div class="search-teams">
-            <div class="search-element"  v-for="team in teams" :key="team.id" @click="selectTeam(team.id,team.name)">
+        <div class="search-teams" @click.stop>
+            <div class="search-element"  v-for="team in teams" :key="team.id" @click="selectTeam(team)">
                 {{ team.name }}
             </div>
         </div>

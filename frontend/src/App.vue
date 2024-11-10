@@ -18,11 +18,16 @@ userStore.checkToken()
   font-family: "Raleway";
   box-sizing: border-box;
 }
-head, body {
+html, body {
   margin: 0;
   padding: 0;
+  height: 100%;
+  width: 100%;
 }
 .view {
   height: calc(100vh - 50px);
+}
+table, td, th {
+  border: 1px solid black;
 }
 </style>
