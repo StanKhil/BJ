@@ -43,26 +43,26 @@ export class ProblemsController {
   async search(@Query() query: SearchDto) {
     return await this.problemsService.search(query);
   }
-  @Roles(Role.ADMIN, Role.USER)
-  @Get(':id')
-  async getProblemById(@Param('id') id: string) {
-    return await this.problemsService.getById(id);
-  }
   @Get('tests/:id')
   async getTestCases(@Param('id') id: string) {
     return await this.problemsService.getTestCases(id);
   }
-  @Get('/test/:id')
+  @Get('test/:id')
   async getTestCaseById(@Param('id') id: string) {
-    return await this.problemsService.getTesterById(id);
+    return await this.problemsService.getTestCaseById(id);
   }
-  @Get('testers/:id')
-  async getTesters(@Param('id') id: string) {
-    return await this.problemsService.getTesters(id);
+  @Get('tester/problem/:id')
+  async getTesterByProblemId(@Param('id') id: string) {
+    return await this.problemsService.getTesterByProblemId(id);
   }
-  @Get('/tester/:id')
+  @Get('tester/:id')
   async getTesterById(@Param('id') id: string) {
     return await this.problemsService.getTesterById(id);
+  }
+  @Roles(Role.ADMIN, Role.USER)
+  @Get(':id')
+  async getProblemById(@Param('id') id: string) {
+    return await this.problemsService.getById(id);
   }
   @Post('')
   async createProblem(@Body() dto: CreateProblemDto) {
