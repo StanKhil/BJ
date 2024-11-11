@@ -42,6 +42,9 @@ export class SubmissionsService {
   async getByProblemId(problemId: string, userId: string) {
     return await this.prisma.submission.findMany({
       where: { problemId, userId },
+      orderBy: {
+        createdAt: 'desc',
+      },
     });
   }
   async create(id: string, userId: string, dto: CreateSubmissionDto) {

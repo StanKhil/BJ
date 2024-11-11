@@ -65,37 +65,35 @@ export class ContestsService {
         'contest with that id and user doesnt exist',
       );
     }
-    const users = await this.prisma.user.findMany({
+    const problems = this.prisma.problem.findMany({
       where: {
-        teams: {
+        contests: {
           some: {
-            id: contest.teamId,
+            id: contest.id,
           },
         },
       },
       include: {
-        submissions: {
-          orderBy: {
-            createdAt: 'desc',
-          },
-          where: {
-            createdAt: {
-              lte: contest.timeEnd,
-              gte: contest.createdAt,
-            },
-            problem: {
-              contests: {
-                some: {
-                  id: contest.id,
-                },
+        submission: {
+          distinct: ['userId'],
+          select: {
+            id: true,
+            verdict: true,
+            createdAt: true,
+            user: {
+              select: {
+                username: true,
+                id: true,
               },
             },
           },
-          take: 1,
+          orderBy: {
+            createdAt: 'desc',
+          },
         },
       },
     });
-    return users;
+    return problems;
   }
   async getByTeam(userId: string, teamId: string) {
     return await this.prisma.contest.findMany({
