@@ -117,7 +117,7 @@ const removeProblem = async(problem)=>{
           </div>
         </div>
         <input v-model="name" placeholder="Enter your contestname" required>
-        <input v-model="timeEnd" placeholder="Enter your timeEnd" required type="date">
+        <input v-model="timeEnd" placeholder="Enter your timeEnd" type="datetime-local" required >
 
       </div>
       <button type="submit">Enter</button>

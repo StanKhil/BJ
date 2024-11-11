@@ -1,5 +1,5 @@
 <script setup>
-import { reactive, ref } from 'vue';
+import { nextTick, reactive, ref } from 'vue';
 import axios from 'axios';
 import { useRoute, useRouter } from 'vue-router';
 import MarkdownRenderer from '@/components/MarkdownRenderer.vue';
@@ -7,44 +7,42 @@ import MarkdownRenderer from '@/components/MarkdownRenderer.vue';
 const router = useRouter();
 const route = useRoute()
 
+const descriptionInput = ref(null)
+
 const problemSection = ref(false)
 const testCaseSection = ref(false)
 const testerSection = ref(false)
-
-const problem = reactive({
-
-})
-const name = ref('');
-const description = ref("");
-const draft = ref(false)
-const rating = ref("")
 const write = ref(false)
 
+const writeDescription = async () => {
+  write.value = true;
+  await nextTick();
+  descriptionInput.value.focus();
+}
+
+const problem = reactive({
+  name: '',
+  description: '',
+  draft: true,
+  rating: 'easy',
+})
 const testCases = ref([])
+const testCase = reactive({
+  input: '',
+})
 const tester = reactive({
-  id: "",
-  language: "",
-  code: ""
+  id: '',
+  language: '',
+  code: ''
 })
 
-const getProblem = async () => {
-  try {
-    const response = await axios.get(`/problems/${route.params.id}`);
-    name.value = response.data.name;
-    description.value = response.data.description;
-    draft.value = response.data.draft;
-    rating.value=response.data.rating;
-  } catch(e) {
-    console.log(e);
-  }
-}
 const edit = async () => {
   try {
     const data = {
-      name: name.value,
-      description: description.value,
-      draft: (draft.value === 'true'),
-      rating: rating.value
+      name: problem.name,
+      description: problem.description,
+      draft: (problem.draft === 'true'),
+      rating: problem.rating
     }
     await axios.patch(`/problems/${route.params.id}`, data);
     await router.push('/admin/problems')
@@ -61,11 +59,42 @@ const editTester = async () => {
     if (tester.id) {
       await axios.patch(`/problems/testers/${tester.id}`, data);
     } else {
-      await axios.post(`/problems/testers/${route.params.id}`, data);
+      const response = await axios.post(`/problems/testers/${route.params.id}`, data);
+      tester.id = response.id;
     }
-    await router.push('/admin/problems')
   } catch (e) {
     console.log(e)
+  }
+}
+const addTestCase = async () => {
+  try {
+    const data = {
+      input: testCase.input,
+    }
+    const response = await axios.post(`/problems/tests/${route.params.id}`, data);
+    testCases.value.push(response.data);
+    testCase.input = '';
+  } catch (e) {
+    console.log(e)
+  }
+}
+const removeTestCase = async (id) => {
+  try {
+    await axios.delete(`/problems/tests/${id}`);
+    testCases.value = testCases.value.filter((test) => test.id != id);
+  } catch (e) {
+    console.log(e)
+  }
+}
+const getProblem = async () => {
+  try {
+    const response = await axios.get(`/problems/${route.params.id}`);
+    problem.name = response.data.name;
+    problem.description = response.data.description;
+    problem.draft = response.data.draft;
+    problem.rating = response.data.rating;
+  } catch(e) {
+    console.log(e);
   }
 }
 const getTestCases = async () => {
@@ -98,19 +127,19 @@ getTester();
     </div>
     <div class="section">
       <h3 class="section-title" @click="problemSection = !problemSection">Problem</h3>
-      <form class="main" @submit.prevent="edit" v-if="problemSection">
+      <form class="form-problem" @submit.prevent="edit" v-if="problemSection">
         <div class="input-container">
-          <input v-model="name" placeholder="Enter your problem name" required>
+          <input v-model="problem.name" placeholder="Enter your problem name" required>
           <div class="description-container">
-            <textarea v-model="description" placeholder="Enter your description" required v-if="write" @blur="write = false"></textarea>
-            <MarkdownRenderer class="description" :source="description" @click="write = true" v-else></MarkdownRenderer>
+            <textarea v-model="problem.description" placeholder="Enter your description" required v-if="write" @blur="write = false" ref="descriptionInput"></textarea>
+            <MarkdownRenderer class="description" :source="problem.description" @click="writeDescription" v-else></MarkdownRenderer>
           </div>
-          <select v-model="draft" required>
+          <select v-model="problem.draft" required>
             <option disabled value="">Draft</option>
             <option>true</option>
             <option>false</option>
           </select>
-          <select v-model="rating" required>
+          <select v-model="problem.rating" required>
             <option disabled value="">Rating</option>
             <option>easy</option>
             <option>medium</option>
@@ -122,14 +151,21 @@ getTester();
     </div>
     <div class="section">
       <h3 class="section-title" @click="testCaseSection = !testCaseSection">TestCases</h3>
-      <form class="main" @submit.prevent="edit" v-if="testCaseSection">
-        <input v-model="name" placeholder="Enter your problem name" required>
-        <button type="submit">Enter</button>
-      </form>
+      <div v-if="testCaseSection">
+        <form class="form-tests" @submit.prevent="addTestCase">
+          <input v-model="testCase.input" placeholder="Add testcase" required>
+          <button type="submit">Add</button>
+        </form>
+        <div class="test-container">
+          <div v-for="test in testCases" class="test-element" @click="removeTestCase(test.id)">
+            {{ test.input }}
+          </div>
+        </div>
+      </div>
     </div>
     <div class="section">
       <h3 class="section-title" @click="testerSection = !testerSection">Tester</h3>
-      <form class="main" @submit.prevent="editTester" v-if="testerSection">
+      <form class="form-tester" @submit.prevent="editTester" v-if="testerSection">
         <div class="input-container">
           <textarea v-model="tester.code" placeholder="Enter your code" required></textarea>
           <select v-model="tester.language" required>
@@ -144,31 +180,6 @@ getTester();
 </template>
 
 <style scoped>
-.section {
-  border: #5083cf 1px solid;
-  margin-bottom: 16px;
-}
-.section-title {
-  cursor: pointer;
-}
-.input-container {
-  width: 100%;
-  padding: 4px;
-}
-.main {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-}
-.container {
-  padding: 4px;
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  height: 100%;
-  overflow: auto;
-}
 input {
     padding: 12px;
     width: 100%;
@@ -185,12 +196,43 @@ textarea {
   width: 100%;
   position: relative;
 }
-
 select {
   width: 100%;
   padding: 12px;
   margin-top: 16px;
   border: #5083cf 1px solid;
+}
+.section {
+  border: #5083cf 1px solid;
+  margin-bottom: 16px;
+}
+.section-title {
+  cursor: pointer;
+}
+.input-container {
+  width: 100%;
+  padding: 4px;
+}
+.form-problem, .form-tester {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.form-tests {
+  display: flex;
+  padding: 4px;
+}
+.form-tests > input {
+  margin: 0;
+}
+.container {
+  padding: 4px;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
 }
 .description {
   margin-top: 16px;
@@ -199,5 +241,22 @@ select {
   cursor: pointer;
   max-height: 100%;
 }
-
+.test-container {
+  width: 100%;
+  height: 100%;
+  padding: 8px;
+}
+.test-element {
+  border: 1px solid black;
+  background-color:lightgray;
+  border-radius: 12px;
+  padding: 8px;
+  cursor: pointer;
+  margin-right: 4px;
+  margin-bottom: 4px;
+  width: 100%;
+  overflow:hidden; 
+  white-space:nowrap;
+  text-overflow: ellipsis;
+}
 </style>

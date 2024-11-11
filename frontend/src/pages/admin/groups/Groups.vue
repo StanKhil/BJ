@@ -51,6 +51,11 @@ getGroups()
 </template>
 
 <style scoped>
+.groupname {
+  overflow: hidden;
+  white-space:nowrap;
+  text-overflow: ellipsis;
+}
 .group {
   display: flex;
   background-color: #5083cf;

@@ -60,7 +60,7 @@ const getContest = async () => {
     const response = await axios.get(`/contests/${route.params.id}`);
     problems.value = response.data.problems
     name.value = response.data.name
-    timeEnd.value = new Date(response.data.timeEnd).toLocaleDateString('en-CA')
+    timeEnd.value = (new Date(response.data.timeEnd)).toISOString().replace("Z", "").substring(0, 16);
   } catch(e) {
     console.log(e);
   }
@@ -91,7 +91,7 @@ getContest()
           </div>
         </div>
         <input v-model="name" placeholder="Enter your contestname" required>
-        <input v-model="timeEnd" placeholder="Enter your timeEnd" required type="date">
+        <input v-model="timeEnd" placeholder="Enter your timeEnd" type="datetime-local" required>
       </div>
       <button type="submit">Enter</button>
     </form>

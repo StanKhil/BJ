@@ -51,6 +51,11 @@ getUsers()
 </template>
 
 <style scoped>
+.username {
+  overflow: hidden;
+  white-space:nowrap;
+  text-overflow: ellipsis;
+}
 .user {
   display: flex;
   background-color: #5083cf;

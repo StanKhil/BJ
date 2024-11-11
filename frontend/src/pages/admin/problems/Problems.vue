@@ -51,6 +51,11 @@ getProblems()
 </template>
 
 <style scoped>
+.problem-name {
+  overflow: hidden;
+  white-space:nowrap;
+  text-overflow: ellipsis;
+}
 .problems {
   display: flex;
   background-color: #5083cf;

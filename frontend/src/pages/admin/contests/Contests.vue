@@ -51,6 +51,11 @@ getContests()
 </template>
 
 <style scoped>
+.contestname {
+  overflow: hidden;
+  white-space:nowrap;
+  text-overflow: ellipsis;
+}
 .contest {
   display: flex;
   background-color: #5083cf;
