@@ -40,6 +40,13 @@ export class SubmissionsController {
   async search(@Query() query: SearchDto) {
     return await this.submissionsService.search(query);
   }
+  @Get('problem/:id')
+  async getByProblemId(
+    @Param('id') problemId: string,
+    @GetUser('id') userId: string,
+  ) {
+    return await this.submissionsService.getByProblemId(problemId, userId);
+  }
   @Get(':id')
   async getById(@Param('id') id: string, @GetUser('id') userId: string) {
     return await this.submissionsService.getById(id, userId);

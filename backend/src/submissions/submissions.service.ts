@@ -39,6 +39,11 @@ export class SubmissionsService {
   async getById(id: string, userId: string) {
     return await this.prisma.submission.findUnique({ where: { id, userId } });
   }
+  async getByProblemId(problemId: string, userId: string) {
+    return await this.prisma.submission.findMany({
+      where: { problemId, userId },
+    });
+  }
   async create(id: string, userId: string, dto: CreateSubmissionDto) {
     const problem = await this.prisma.problem.findUnique({
       where: { id },
