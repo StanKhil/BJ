@@ -3,13 +3,15 @@ import { ref } from 'vue';
 import axios from 'axios';
 import Loader from '@/components/UI/Loader.vue';
 import router from '@/router';
+import { useRoute } from 'vue-router';
 
+const route = useRoute();
 const loading = ref(true);
 const problems = ref([]);
 const getProblems = async () => {
   try {
-    const response = await axios.get('/problems');
-    problems.value = response.data.data;
+    const response = await axios.get(`/contests/${route.params.id}`);
+    problems.value = response.data.problems;
   } catch(e) {
     console.log(e)
   } finally {
@@ -26,10 +28,12 @@ getProblems()
     </div>
   </div>
   <div class="container" v-else>
-    <div class="problem-list">
-      <div v-for="problem in problems" class="problems">
-        <div class="problem-name" @click="router.push(`/problem/${problem.id}`)">
+    <div>
+      <div class="problem-list">
+        <div v-for="problem in problems" class="problems"  @click="router.push(`/problem/${problem.id}`)">
+         <div class="problem-name">
           {{problem.name}} ({{ problem.draft }}) ({{ problem.rating }})
+         </div>
         </div>
       </div>
     </div>

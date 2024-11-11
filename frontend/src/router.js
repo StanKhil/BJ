@@ -2,6 +2,7 @@ import { createWebHistory, createRouter } from 'vue-router'
 
 import Home from './pages/Home.vue'
 import Group from './pages/Group.vue'
+import Contest from './pages/Contest.vue'
 import Groups from './pages/Groups.vue'
 import Profile from './pages/Profile.vue'
 import Login from './pages/Login.vue'
@@ -24,6 +25,7 @@ import ContestsDelete from './pages/admin/contests/ContestsDelete.vue'
 import ProblemsCreate from './pages/admin/problems/ProblemsCreate.vue'
 import ProblemsEdit from './pages/admin/problems/ProblemsEdit.vue'
 import ProblemsDelete from './pages/admin/problems/ProblemsDelete.vue'
+import Problem from './pages/Problem.vue'
 
 const routes = [
   { path: '/login', component: Login, name: 'login' },
@@ -55,6 +57,8 @@ const routes = [
   { path: '/', component: Home },
   { path: '/problems', component: Problems },
   { path: '/groups/:id', component: Group },
+  { path: '/contest/:id', component: Contest },
+  { path: '/problem/:id', component: Problem }
 ]
 
 const router = createRouter({

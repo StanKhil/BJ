@@ -32,7 +32,7 @@ getContests()
     <div class="container-content" v-else>
       <div class="contest-list">
         <div v-for="contest in contests" class="contest">
-         <div class="contestname" @click="router.push(`/contests`)">
+         <div class="contestname" @click="router.push(`/contest/${contest.id}`)">
           {{contest.name}} ({{ new Date(contest.timeEnd).toLocaleDateString() }})
          </div>
         </div>
