@@ -49,21 +49,21 @@ export class ProblemsService {
     });
   }
   async getTestCaseById(id: string) {
-    return await this.prisma.testCase.findMany({
+    return await this.prisma.testCase.findUnique({
       where: {
         id,
       },
     });
   }
-  async getTesters(id: string) {
-    return await this.prisma.tester.findMany({
+  async getTesterByProblemId(id: string) {
+    return await this.prisma.tester.findFirst({
       where: {
         problemId: id,
       },
     });
   }
   async getTesterById(id: string) {
-    return await this.prisma.tester.findUnique({
+    return await this.prisma.tester.findFirst({
       where: {
         id,
       },
