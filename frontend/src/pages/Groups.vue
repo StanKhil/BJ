@@ -1,48 +1,72 @@
 <script setup>
+import { ref } from 'vue';
+import axios from 'axios';
+import Loader from '@/components/UI/Loader.vue';
+import router from '@/router';
 
-import {reactive} from 'vue'
-
-
-let group = reactive({
-    title:"group1"
-})
-let group2 = reactive({
-    title:"group2"
-})
-let groups=new Array()
-groups.push(group)
-groups.push(group2)
-
+const loading = ref(true);
+const groups = ref([]);
+const getGroups = async () => {
+  try {
+    const response = await axios.get('/teams');
+    groups.value = response.data.data;
+  } catch(e) {
+    console.log(e)
+  } finally {
+    loading.value = false;
+  }
+}
+getGroups()
 </script>
 
 <template>
-
-    <div class="main">
-        <h2>Your groups:</h2>
-        <div class="listGroups">
-            <ul>
-                <li v-for="group in groups">
-                    {{ group.title }}
-                </li>
-            </ul>
+    <div v-if="loading" class="loading">
+      <div class="load">
+        <Loader />
+      </div>
+    </div>
+    <div class="container">
+        <div class="group-list">
+        <div v-for="group in groups" class="group">
+          <div class="groupname" @click="router.push(`/groups/${group.id}`)">
+           {{group.name}}
+          </div>
         </div>
+      </div>
     </div>
 </template>
 
 <style scoped>
-li{
-    list-style-type: none;
-    background-color:#5083cf;
-    width: fit-content;
-    padding: 10px;
-    margin: 15px 0px;
-    color:white;
+.group {
+  display: flex;
+  background-color: #5083cf;
+  padding: 16px;
+  color: white;
+  margin-top: 4px;
+  border-radius: 8px;
+  justify-content: space-between;
+  align-items: center;
 }
-h2{
-    background-color:#5083cf;
-    color:white;
-    padding: 10px;
-    margin: 15px 0px;
+.group-list {
+  padding: 8px;
+}
+.container {
+  padding: 2px;
+  width: 100%;
+  height: 100%;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.load {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+.loading {
+  width: 100%;
+  height: 100%;
+  position: relative;
 }
 </style>
 

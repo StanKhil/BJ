@@ -27,27 +27,15 @@ getContests()
   </div>
   <div class="container" v-else>
     <div>
-      <div class="input-container">
-        <input type="text" placeholder="Search...">
-      </div>
       <div class="contest-list">
         <div v-for="contest in contests" class="contest">
-         <div class="contestname">
+         <div class="contestname" @click="router.push(`/contests`)">
           {{contest.name}} ({{ new Date(contest.timeEnd).toLocaleDateString() }})
-         </div>
-         <div class="tools">
-          <button @click="router.push(`/admin/contests/edit/${contest.id}`)">edit</button>
-          <button @click="router.push(`/admin/contests/delete/${contest.id}`)">delete</button>
          </div>
         </div>
       </div>
     </div>
-
-    <div class="create">
-      <button @click="router.push('/admin/contests/create')">create</button>
-    </div>
   </div>
-
 </template>
 
 <style scoped>
@@ -71,12 +59,6 @@ getContests()
   flex-direction: column;
   justify-content: space-between;
 }
-.input-container > input {
-  padding: 8px;
-  width: 100%;
-  border-radius: 8px;
-  border: 2px solid #4673b6;
-}
 .load {
   position: absolute;
   top: 50%;
@@ -87,12 +69,5 @@ getContests()
   width: 100%;
   height: 100%;
   position: relative;
-}
-.create > button {
-  width: 100%;
-  background-color: #4673b6;
-}
-.tools > button {
-  margin-left: 4px;
 }
 </style>

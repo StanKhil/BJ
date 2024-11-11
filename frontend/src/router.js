@@ -1,6 +1,7 @@
 import { createWebHistory, createRouter } from 'vue-router'
 
 import Home from './pages/Home.vue'
+import Group from './pages/Group.vue'
 import Groups from './pages/Groups.vue'
 import Profile from './pages/Profile.vue'
 import Login from './pages/Login.vue'
@@ -53,6 +54,7 @@ const routes = [
   { path: '/profile', component: Profile },
   { path: '/', component: Home },
   { path: '/problems', component: Problems },
+  { path: '/groups/:id', component: Group },
 ]
 
 const router = createRouter({
