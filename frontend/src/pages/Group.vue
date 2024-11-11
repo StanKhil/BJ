@@ -3,13 +3,16 @@ import { ref } from 'vue';
 import axios from 'axios';
 import Loader from '@/components/UI/Loader.vue';
 import router from '@/router';
+import { useRoute } from 'vue-router';
+
+const route = useRoute();
 
 const loading = ref(true);
 const contests = ref([]);
 const getContests = async () => {
   try {
-    const response = await axios.get('/contests');
-    contests.value = response.data.data;
+    const response = await axios.get(`/contests/team/${route.params.id}`);
+    contests.value = response.data;
   } catch(e) {
     console.log(e)
   } finally {
@@ -20,13 +23,13 @@ getContests()
 </script>
 
 <template>
-  <div v-if="loading" class="loading">
-    <div class="load">
-      <Loader />
+  <div class="container">
+    <div v-if="loading" class="loading">
+      <div class="load">
+        <Loader />
+      </div>
     </div>
-  </div>
-  <div class="container" v-else>
-    <div>
+    <div class="container-content" v-else>
       <div class="contest-list">
         <div v-for="contest in contests" class="contest">
          <div class="contestname" @click="router.push(`/contests`)">
@@ -52,7 +55,7 @@ getContests()
 .contest-list {
   padding: 8px;
 }
-.container {
+.container-content {
   padding: 2px;
   width: 100%;
   height: 100%;

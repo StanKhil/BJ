@@ -9,7 +9,7 @@ userStore.checkToken()
 </script>
 
 <template>
-  <HeaderComponent title="BJ"/>
+  <HeaderComponent/>
   <RouterView class="view"></RouterView>
 </template>
 

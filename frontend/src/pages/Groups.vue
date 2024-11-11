@@ -20,20 +20,22 @@ getGroups()
 </script>
 
 <template>
+  <div class="container">
     <div v-if="loading" class="loading">
       <div class="load">
         <Loader />
       </div>
     </div>
-    <div class="container">
-        <div class="group-list">
-        <div v-for="group in groups" class="group">
-          <div class="groupname" @click="router.push(`/groups/${group.id}`)">
+    <div class="container-content" v-else>
+      <div class="group-list">
+        <div v-for="group in groups" class="group" @click="router.push(`/groups/${group.id}`)">
+          <div class="groupname">
            {{group.name}}
           </div>
         </div>
       </div>
     </div>
+  </div>
 </template>
 
 <style scoped>
@@ -46,17 +48,19 @@ getGroups()
   border-radius: 8px;
   justify-content: space-between;
   align-items: center;
+  cursor: pointer;
 }
 .group-list {
   padding: 8px;
 }
-.container {
+.container-content {
   padding: 2px;
   width: 100%;
   height: 100%;
   flex-direction: column;
   justify-content: space-between;
 }
+
 .load {
   position: absolute;
   top: 50%;

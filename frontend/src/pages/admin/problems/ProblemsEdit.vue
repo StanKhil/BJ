@@ -78,9 +78,10 @@ const getTestCases = async () => {
 }
 const getTester = async () => {
   try {
-    const response = await axios.get(`/problems/tester/${route.params.id}`);
+    const response = await axios.get(`/problems/tester/problem/${route.params.id}`);
     tester.language = response.data.language ?? "";
     tester.code = response.data.code ?? "";
+    tester.id = response.data.id ?? "";
   } catch(e) {
     console.log(e);
   }
@@ -128,7 +129,7 @@ getTester();
     </div>
     <div class="section">
       <h3 class="section-title" @click="testerSection = !testerSection">Tester</h3>
-      <form class="main" @submit.prevent="edit" v-if="testerSection">
+      <form class="main" @submit.prevent="editTester" v-if="testerSection">
         <div class="input-container">
           <textarea v-model="tester.code" placeholder="Enter your code" required></textarea>
           <select v-model="tester.language" required>
