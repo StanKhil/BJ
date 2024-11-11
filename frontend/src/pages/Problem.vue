@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue';
+import { reactive, ref } from 'vue';
 import axios from 'axios';
 import Loader from '@/components/UI/Loader.vue';
 import { useRoute } from 'vue-router';
@@ -11,9 +11,38 @@ const name = ref("");
 const description = ref("");
 const rating = ref("");
 const draft = ref(false);
-const submmision = ref("");
-const write = ref(true);
+
+const submmision = reactive({
+  code: '',
+  language: '',
+})
+
+const createSubmission = async () => {
+  try {
+    const response = await axios.post(`/submissions/${route.params.id}`, {
+      code: submmision.code,
+      language: submmision.code
+    });
+    console.log()
+  } catch (e) {
+    console.log(e)
+  }
+}
+
 const getProblem = async () => {
+  try {
+    const response = await axios.get(`/problems/${route.params.id}`);
+    name.value=response.data.name;
+    description.value=response.data.description;
+    rating.value=response.data.rating;
+    draft.value=response.data.draft;
+  } catch(e) {
+    console.log(e)
+  } finally {
+    loading.value = false;
+  }
+}
+const getSubmissions = async () => {
   try {
     const response = await axios.get(`/problems/${route.params.id}`);
     name.value=response.data.name;
@@ -40,11 +69,24 @@ getProblem()
       <div class="title">
         <h1>{{ name }} ({{ rating }})</h1>
       </div>
-      <MarkdownRenderer class="description" :source="description" @click="write = false"></MarkdownRenderer>
+      <div class="description">
+        <MarkdownRenderer  :source="description"></MarkdownRenderer>
+      </div>
       <div class="input-container">
-          <textarea v-model="submmision" placeholder="Send yor submmision" required v-if="write" @blur="write = false"></textarea>
-          <MarkdownRenderer class="submmision" :source="submmision" @click="write = true" v-else></MarkdownRenderer>
+        <form @submit.prevent="createSubmission">
+          <select v-model="submmision.language" required>
+            <option disabled value="">Language</option>
+            <option>cpp</option>
+          </select>
+          <textarea v-model="submmision.code" placeholder="Send yor submmision" required>My code</textarea>
+          <button type="submit">Enter</button>
+        </form>
+      </div>
+      <div class="submission-list"> 
+        <div v-for="sub in submissions" class="submission">
+
         </div>
+      </div>
     </div>
   </div>
 </template>
@@ -71,11 +113,12 @@ getProblem()
 }
 .title{
     color:#5083cf;
-    padding-left: 10%;
     border: #5083cf 1px solid;
 }
 .main{
-    padding-left: 5%;
+    display: flex;
+    flex-direction: column;
+    padding: 4px;
 }
 .submmision {
   margin-top: 16px;
@@ -84,5 +127,30 @@ getProblem()
   height: 100%;
   cursor: pointer;
 }
-
+.description {
+  margin-top: 16px;
+  padding: 4px;
+  border: #5083cf 1px solid;
+}
+textarea {
+  resize: none;
+  border: #5083cf 1px solid;
+  height: 184px;
+  width: 100%;
+  position: relative;
+}
+select {
+  width: 100%;
+  padding: 12px;
+  border: #5083cf 1px solid;
+}
+.input-container {
+  margin-top: 16px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+.input-container > form > button {
+  width: 100%;
+}
 </style>
