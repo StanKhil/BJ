@@ -16,14 +16,13 @@ const submmision = reactive({
   code: '',
   language: '',
 })
-
+const submissions = ref([]);
 const createSubmission = async () => {
   try {
-    const response = await axios.post(`/submissions/${route.params.id}`, {
+    await axios.post(`/submissions/${route.params.id}`, {
       code: submmision.code,
-      language: submmision.code
+      language: submmision.language
     });
-    console.log()
   } catch (e) {
     console.log(e)
   }
@@ -44,17 +43,16 @@ const getProblem = async () => {
 }
 const getSubmissions = async () => {
   try {
-    const response = await axios.get(`/problems/${route.params.id}`);
-    name.value=response.data.name;
-    description.value=response.data.description;
-    rating.value=response.data.rating;
-    draft.value=response.data.draft;
+    const response = await axios.get(`/submissions/problem/${route.params.id}`);
+    console.log(response)
+    submissions.value = response.data
   } catch(e) {
     console.log(e)
   } finally {
     loading.value = false;
   }
 }
+getSubmissions()
 getProblem()
 </script>
 
@@ -84,7 +82,7 @@ getProblem()
       </div>
       <div class="submission-list"> 
         <div v-for="sub in submissions" class="submission">
-
+          {{ sub.verdict }}/{{ sub.createdAt }}
         </div>
       </div>
     </div>
