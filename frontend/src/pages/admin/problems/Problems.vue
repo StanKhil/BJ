@@ -6,10 +6,27 @@ import router from '@/router';
 
 const loading = ref(true);
 const problems = ref([]);
+const page = ref(1);
+const total = ref(1);
+const searchProblems = async (event) => {
+  if (!event.target.value) {
+    await getProblems();
+  } else {
+    try {
+      const response = await axios.get('/problems/search', { params: { search: event.target.value } });
+      problems.value = response.data;
+    } catch(e) {
+      console.log(e);
+    } finally {
+      loading.value = false;
+    }
+  }
+}
 const getProblems = async () => {
   try {
     const response = await axios.get('/problems');
     problems.value = response.data.data;
+    total.value = response.data.meta.lastPage;
   } catch(e) {
     console.log(e)
   } finally {
@@ -26,9 +43,9 @@ getProblems()
     </div>
   </div>
   <div class="container" v-else>
-    <div>
+    <div class="problem-list-container">
       <div class="input-container">
-        <input type="text" placeholder="Search...">
+        <input type="text" placeholder="Search..." @input="searchProblems">
       </div>
       <div class="problem-list">
         <div v-for="problem in problems" class="problems">
@@ -42,9 +59,15 @@ getProblems()
         </div>
       </div>
     </div>
-
-    <div class="create">
-      <button @click="router.push('/admin/problems/create')">create</button>
+    <div>
+      <div class="pagination" v-if="total > 1">
+          <button v-if="page !== 1" @click="page -= 1"><</button>
+          <button>{{ page }}</button>
+          <button v-if="page !== total" @click="page += 1">></button>
+        </div>
+      <div class="create">
+        <button @click="router.push('/admin/problems/create')">create</button>
+      </div>
     </div>
   </div>
 
@@ -75,6 +98,7 @@ getProblems()
   height: 100%;
   flex-direction: column;
   justify-content: space-between;
+  overflow: auto;
 }
 .input-container > input {
   padding: 8px;
@@ -99,5 +123,15 @@ getProblems()
 }
 .tools > button {
   margin-left: 4px;
+}
+.problem-list-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.pagination {
+  width: 100%;
+  display: flex;
+  justify-content: center;
 }
 </style>

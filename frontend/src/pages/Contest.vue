@@ -43,29 +43,31 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div v-if="loading" class="loading">
-    <div class="load">
-      <Loader />
-    </div>
-  </div>
-  <div class="container" v-else>
-    <div class="table">
-      <div class="row">
-        <div class="td">+</div>
-        <div v-for="problem in problemsResult" @click="router.push(`/problem/${problem.id}`)" class="td">
-          {{ problem.name }}
-        </div>
+  <div>
+    <div v-if="loading" class="loading">
+      <div class="load">
+        <Loader />
       </div>
-      <div v-for="user in users" class="row">
-        <div class="td">
-          {{ user.username }}
-        </div>
-        <div v-for="problem in problemsResult" class="td">
-          <div v-for="result in problem.submission" >
-            <div v-if="result.user.id === user.id">{{ result.verdict }}</div>
+    </div>
+    <div class="container" v-else>
+      <div class="table">
+        <div class="row">
+          <div class="td">+</div>
+          <div v-for="problem in problemsResult" @click="router.push(`/problem/${problem.id}`)" class="td">
+            {{ problem.name }}
           </div>
-          <div v-if="problem?.submission?.filter((s) => s.user.id === user.id).length === 0">
-            0
+        </div>
+        <div v-for="user in users" class="row">
+          <div class="td">
+            {{ user.username }}
+          </div>
+          <div v-for="problem in problemsResult" class="td">
+            <div v-for="result in problem.submission" >
+              <div v-if="result.user.id === user.id">{{ result.verdict }}</div>
+            </div>
+            <div v-if="problem?.submission?.filter((s) => s.user.id === user.id).length === 0">
+              0
+            </div>
           </div>
         </div>
       </div>
@@ -114,15 +116,12 @@ onMounted(async () => {
   width: 100%;
   height: 100%;
   display: flex;
-
 }
 .row {
   height: 100%;
   width: 100%;
   display: flex;
   flex-direction: column;
-  
-  
 }
 .td {
   cursor: pointer;

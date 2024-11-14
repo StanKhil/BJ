@@ -6,6 +6,20 @@ import router from '@/router';
 
 const loading = ref(true);
 const contests = ref([]);
+const searchContests = async (event) => {
+  if (!event.target.value) {
+    await getContests();
+  } else {
+    try {
+      const response = await axios.get('/contests/search', { params: { search: event.target.value } });
+      contests.value = response.data;
+    } catch(e) {
+      console.log(e);
+    } finally {
+      loading.value = false;
+    }
+  }
+}
 const getContests = async () => {
   try {
     const response = await axios.get('/contests');
@@ -28,7 +42,7 @@ getContests()
   <div class="container" v-else>
     <div>
       <div class="input-container">
-        <input type="text" placeholder="Search...">
+        <input type="text" placeholder="Search..." @input="searchContests">
       </div>
       <div class="contest-list">
         <div v-for="contest in contests" class="contest">
@@ -75,6 +89,7 @@ getContests()
   height: 100%;
   flex-direction: column;
   justify-content: space-between;
+  overflow: auto;
 }
 .input-container > input {
   padding: 8px;

@@ -6,6 +6,20 @@ import router from '@/router';
 
 const loading = ref(true);
 const problems = ref([]);
+const searchProblems = async (event) => {
+  if (!event.target.value) {
+    await getProblems();
+  } else {
+    try {
+      const response = await axios.get('/problems/search', { params: { search: event.target.value } });
+      problems.value = response.data;
+    } catch(e) {
+      console.log(e);
+    } finally {
+      loading.value = false;
+    }
+  }
+}
 const getProblems = async () => {
   try {
     const response = await axios.get('/problems');
@@ -20,16 +34,21 @@ getProblems()
 </script>
 
 <template>
-  <div v-if="loading" class="loading">
-    <div class="load">
-      <Loader />
+  <div>
+    <div v-if="loading" class="loading">
+      <div class="load">
+        <Loader/>
+      </div>
     </div>
-  </div>
-  <div class="container" v-else>
-    <div class="problem-list">
-      <div v-for="problem in problems" class="problems">
-        <div class="problem-name" @click="router.push(`/problem/${problem.id}`)">
-          {{problem.name}} ({{ problem.draft }}) ({{ problem.rating }})
+    <div class="container" v-else>
+      <div class="input-container">
+        <input type="text" placeholder="Search..." @input="searchProblems">
+      </div>
+      <div class="problem-list">
+        <div v-for="problem in problems" class="problems" @click="router.push(`/problem/${problem.id}`)">
+          <div class="problem-name">
+            {{ problem.name }} ({{ problem.draft }}) ({{ problem.rating }})
+          </div>
         </div>
       </div>
     </div>
@@ -51,6 +70,7 @@ getProblems()
   border-radius: 8px;
   justify-content: space-between;
   align-items: center;
+  cursor: pointer;
 }
 .problems-list {
   padding: 8px;
@@ -72,5 +92,11 @@ getProblems()
   width: 100%;
   height: 100%;
   position: relative;
+}
+.input-container > input {
+  padding: 8px;
+  width: 100%;
+  border-radius: 8px;
+  border: 2px solid #4673b6;
 }
 </style>

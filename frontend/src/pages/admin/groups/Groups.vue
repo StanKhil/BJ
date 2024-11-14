@@ -6,6 +6,20 @@ import router from '@/router';
 
 const loading = ref(true);
 const groups = ref([]);
+const searchGroups = async (event) => {
+  if (!event.target.value) {
+    await getGroups();
+  } else {
+    try {
+      const response = await axios.get('/teams/search', { params: { search: event.target.value } });
+      groups.value = response.data;
+    } catch(e) {
+      console.log(e);
+    } finally {
+      loading.value = false;
+    }
+  }
+}
 const getGroups = async () => {
   try {
     const response = await axios.get('/teams');
@@ -28,7 +42,7 @@ getGroups()
   <div class="container" v-else>
     <div>
       <div class="input-container">
-        <input type="text" placeholder="Search...">
+        <input type="text" placeholder="Search..." @input="searchGroups">
       </div>
       <div class="group-list">
         <div v-for="group in groups" class="group">
@@ -42,10 +56,13 @@ getGroups()
         </div>
       </div>
     </div>
-
-    <div class="create">
-      <button @click="router.push('/admin/groups/create')">create</button>
+    <div>
+      
+      <div class="create">
+        <button @click="router.push('/admin/groups/create')">create</button>
+      </div>
     </div>
+
   </div>
 
 </template>
@@ -75,6 +92,7 @@ getGroups()
   height: 100%;
   flex-direction: column;
   justify-content: space-between;
+  overflow: auto;
 }
 .input-container > input {
   padding: 8px;

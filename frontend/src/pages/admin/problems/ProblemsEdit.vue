@@ -3,9 +3,11 @@ import { nextTick, reactive, ref } from 'vue';
 import axios from 'axios';
 import { useRoute, useRouter } from 'vue-router';
 import MarkdownRenderer from '@/components/MarkdownRenderer.vue';
+import { useToastStore } from '@/stores/toast.store';
 
 const router = useRouter();
 const route = useRoute()
+const toastStore = useToastStore();
 
 const descriptionInput = ref(null)
 
@@ -36,7 +38,7 @@ const tester = reactive({
   code: ''
 })
 
-const edit = async () => {
+const editProblem = async () => {
   try {
     const data = {
       name: problem.name,
@@ -62,6 +64,7 @@ const editTester = async () => {
       const response = await axios.post(`/problems/testers/${route.params.id}`, data);
       tester.id = response.id;
     }
+    toastStore.success('successfuly created')
   } catch (e) {
     console.log(e)
   }
@@ -127,7 +130,7 @@ getTester();
     </div>
     <div class="section">
       <h3 class="section-title" @click="problemSection = !problemSection">Problem</h3>
-      <form class="form-problem" @submit.prevent="edit" v-if="problemSection">
+      <form class="form-problem" @submit.prevent="editProblem" v-if="problemSection">
         <div class="input-container">
           <input v-model="problem.name" placeholder="Enter your problem name" required>
           <div class="description-container">

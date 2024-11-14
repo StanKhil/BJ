@@ -1,7 +1,7 @@
-import router from "@/router"
-import axios from "axios"
-import { defineStore } from "pinia"
-import { reactive } from "vue"
+import router from '@/router'
+import axios from 'axios'
+import { defineStore } from 'pinia'
+import { reactive } from 'vue'
 
 export const useUserStore = defineStore('user', () => {
     const user = reactive({
@@ -19,9 +19,18 @@ export const useUserStore = defineStore('user', () => {
       } catch (e) {
         console.log(e);
         if (axios.isAxiosError(e) && e.response?.status === 401) {
-          router.push("/login")
+          router.push('/login')
         } 
       }
     }
-    return { user, checkToken }
+    const logout = () => {
+      localStorage.setItem('token', '');
+      axios.defaults.headers.common['Authorization'] = ``;
+      user.id = '';
+      user.username = '';
+      user.role = '';
+      user.token = '';
+      router.push('/login')
+    }
+    return { user, checkToken, logout }
   })

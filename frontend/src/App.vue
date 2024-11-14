@@ -1,5 +1,6 @@
 <script setup>
 import HeaderComponent from './components/HeaderComponent.vue';
+import ToastComponent from './components/ToastComponent.vue';
 import { useUserStore } from './stores/user.store';
 import axios from 'axios';
 
@@ -11,6 +12,7 @@ userStore.checkToken()
 <template>
   <HeaderComponent/>
   <RouterView class="view"></RouterView>
+  <ToastComponent />
 </template>
 
 <style>
