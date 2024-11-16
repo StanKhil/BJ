@@ -54,7 +54,7 @@ const routes = [
   
   { path: '/groups', component: Groups },
   { path: '/profile', component: Profile },
-  { path: '/', component: Home },
+  { path: '/', component: Home, name: 'home' },
   { path: '/problems', component: Problems },
   { path: '/groups/:id', component: Group },
   { path: '/contest/:id', component: Contest },
@@ -65,9 +65,11 @@ const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes,
 })
-router.beforeEach((to, from, next) => {
+router.beforeEach((to, from, next) => {  
   const userStore = useUserStore();
-  if (userStore.user.token || to.name === 'login') {
+  if (to.fullPath.startsWith('/admin') && userStore.user.role !== 'ADMIN') {
+    next({name: 'home'})
+  } else if (userStore.user.token || to.name === 'login') {
     next()
   } else {
     next({name: 'login'})

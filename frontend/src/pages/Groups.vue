@@ -59,6 +59,7 @@ getGroups()
   height: 100%;
   flex-direction: column;
   justify-content: space-between;
+  overflow: auto;
 }
 
 .load {

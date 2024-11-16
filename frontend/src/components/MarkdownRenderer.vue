@@ -17,3 +17,8 @@ const props = defineProps({
 
 const rendered = computed(() => markdown.render(props.source));
 </script>
+<style>
+img {
+  width: 200px;
+}
+</style>

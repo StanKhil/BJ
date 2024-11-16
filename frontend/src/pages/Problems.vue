@@ -5,7 +5,10 @@ import Loader from '@/components/UI/Loader.vue';
 import router from '@/router';
 
 const loading = ref(true);
+const page = ref(1);
+const total = ref(1);
 const problems = ref([]);
+
 const searchProblems = async (event) => {
   if (!event.target.value) {
     await getProblems();
@@ -24,6 +27,7 @@ const getProblems = async () => {
   try {
     const response = await axios.get('/problems');
     problems.value = response.data.data;
+    total.value = response.data.meta.lastPage;
   } catch(e) {
     console.log(e)
   } finally {
@@ -41,15 +45,22 @@ getProblems()
       </div>
     </div>
     <div class="container" v-else>
-      <div class="input-container">
-        <input type="text" placeholder="Search..." @input="searchProblems">
-      </div>
-      <div class="problem-list">
-        <div v-for="problem in problems" class="problems" @click="router.push(`/problem/${problem.id}`)">
-          <div class="problem-name">
-            {{ problem.name }} ({{ problem.draft }}) ({{ problem.rating }})
+      <div>
+        <div class="input-container">
+          <input type="text" placeholder="Search..." @input="searchProblems">
+        </div>
+        <div class="problem-list">
+          <div v-for="problem in problems" class="problems" @click="router.push(`/problem/${problem.id}`)">
+            <div class="problem-name">
+              {{ problem.name }} ({{ problem.draft }}) ({{ problem.rating }})
+            </div>
           </div>
         </div>
+      </div>
+      <div class="pagination" v-if="total > 1">
+        <button v-if="page !== 1" @click="page -= 1"><</button>
+        <button>{{ page }}</button>
+        <button v-if="page !== total" @click="page += 1">></button>
       </div>
     </div>
   </div>
@@ -79,6 +90,7 @@ getProblems()
   padding: 2px;
   width: 100%;
   height: 100%;
+  display: flex;
   flex-direction: column;
   justify-content: space-between;
 }
@@ -98,5 +110,10 @@ getProblems()
   width: 100%;
   border-radius: 8px;
   border: 2px solid #4673b6;
+}
+.pagination {
+  width: 100%;
+  display: flex;
+  justify-content: center;
 }
 </style>

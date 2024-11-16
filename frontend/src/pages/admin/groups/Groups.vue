@@ -57,7 +57,6 @@ getGroups()
       </div>
     </div>
     <div>
-      
       <div class="create">
         <button @click="router.push('/admin/groups/create')">create</button>
       </div>
@@ -90,6 +89,7 @@ getGroups()
   padding: 2px;
   width: 100%;
   height: 100%;
+  display: flex;
   flex-direction: column;
   justify-content: space-between;
   overflow: auto;

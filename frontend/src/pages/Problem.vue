@@ -103,7 +103,10 @@ getProblem()
 </template>
 
 <style scoped>
-
+img {
+  max-width: 200px;
+  height: 200px;
+}
 .container {
   padding: 2px;
   width: 100%;
