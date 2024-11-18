@@ -76,6 +76,12 @@ export class ContestsService {
       include: {
         submission: {
           distinct: ['userId'],
+          where: {
+            createdAt: {
+              gte: contest.timeStart,
+              lte: contest.timeEnd,
+            },
+          },
           select: {
             id: true,
             verdict: true,
@@ -142,6 +148,7 @@ export class ContestsService {
         },
         name: dto.name,
         timeEnd: dto.timeEnd,
+        timeStart: dto.timeStart,
       },
     });
   }
@@ -166,6 +173,7 @@ export class ContestsService {
       data: {
         ...(dto.name && { name: dto.name }),
         ...(dto.timeEnd && { timeEnd: dto.timeEnd }),
+        ...(dto.timeStart && { timeEnd: dto.timeStart }),
         ...(dto.problems && {
           problems: {
             set: dto.problems.map((id) => ({ id })),

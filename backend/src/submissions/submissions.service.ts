@@ -55,7 +55,12 @@ export class SubmissionsService {
         tester: true,
       },
     });
-    if (!problem || problem.draft) {
+    if (
+      !problem ||
+      problem.draft ||
+      !problem.tester.id ||
+      problem.testCases.length === 0
+    ) {
       throw new BadRequestException('problem with this id isnt exist');
     }
     const submission = await this.prisma.submission.create({

@@ -25,6 +25,12 @@ export class CreateContestDto {
   timeEnd: Date;
   @ApiProperty()
   @IsNotEmpty()
+  @Transform(({ value }) => new Date(value))
+  @IsDate()
+  @MinDate(new Date())
+  timeStart: Date;
+  @ApiProperty()
+  @IsNotEmpty()
   @IsString()
   teamId: string;
 }
