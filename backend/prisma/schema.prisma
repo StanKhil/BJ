@@ -73,7 +73,7 @@ model Contest {
   id String   @id @default(uuid())
   name String
   problems Problem[]
-  createdAt DateTime @default(now())
+  timeStart DateTime @default(now())
   timeEnd DateTime
   teamId String
   team Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
