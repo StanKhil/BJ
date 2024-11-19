@@ -1,32 +1,33 @@
 <script setup>
+import MarkdownRenderer from '@/components/MarkdownRenderer.vue';
 import Loader from '@/components/UI/Loader.vue';
 import { useUserStore } from '@/stores/user.store';
 import axios from 'axios';
 import { reactive, ref } from 'vue';
+import { useRoute } from 'vue-router';
 
-const userStore = useUserStore();
-
-const loading = ref(true)
-const user = reactive({
+const route = useRoute();
+const loading = ref(true);
+const submission = reactive({
   id: '',
-  username: '',
-  role: '',
+  code: '',
+  lang: '',
   createdAt: ''
 })
-const getMe = async () => {
+const getSubmission = async () => {
   try {
-    const response = await axios.get('/users/me');
-    user.id = response.data.id;
-    user.username = response.data.username;
-    user.role = response.data.role;
-    user.createdAt = response.data.createdAt;
+    const response = await axios.get(`/submissions/${route.params.id}`);
+    submission.id = response.data.id;
+    submission.code = response.data.code;
+    submission.lang = response.data.language;
+    submission.createdAt = response.data.createdAt;
   } catch (e) {
     console.log(e);
   } finally {
     loading.value = false;
   }
 }
-getMe();
+getSubmission();
 </script>
 
 <template>
@@ -35,18 +36,13 @@ getMe();
       <div v-if="loading" class="load">
         <Loader />
       </div>
-      <div class="profile-container" v-else>
+      <div class="submission-container" v-else>
+        <textarea readonly>{{ submission.code }}</textarea>
         <div class="text">
-          username: {{ user.username }}
+          {{ submission.lang }}
         </div>
         <div class="text">
-          role: {{ user.role }}
-        </div>
-        <div class="text">
-          created At: {{ (new Date(user.createdAt)).toLocaleDateString() }}
-        </div>
-        <div class="logout-container">
-          <button @click="userStore.logout">logout</button>
+          {{ submission.createdAt }}
         </div>
       </div>
     </div>
@@ -65,8 +61,8 @@ getMe();
 .load {
   position: absolute;
 }
-.profile-container {
-  width: 200px;
+.submission-container {
+  width: 100%;
   display: flex;
   flex-direction: column;
   border: 2px solid #0066cc;
@@ -80,12 +76,18 @@ getMe();
   border-radius: 8px;
   color: white;
 }
-.logout-container {
+
+.code {
   margin-top: 16px;
+  padding: 16px;
+  
 }
-.logout-container > button {
-  background-color: #0066cc;
+textarea {
+  resize: none;
   width: 100%;
+  height: 100%;
+  height: 300px;
+  border: #5083cf 1px solid;
 }
 </style>
 

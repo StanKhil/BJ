@@ -1,14 +1,31 @@
 <script setup>
 import { useRouter } from 'vue-router'
 import {ref} from 'vue'
+import axios from 'axios';
+import { useUserStore } from '@/stores/user.store';
+import { useToastStore } from '@/stores/toast.store';
 
 const router = useRouter()
+const userStore = useUserStore();
 const username = ref("")
 const password = ref("")
 
-const login = () => {
-    console.log(login.value + " " + password.value)
-    router.push('/home')
+const toastStore = useToastStore();
+
+const login = async () => {
+    try {
+        const response = await axios.post('/auth/signin', {
+            username: username.value,
+            password: password.value,
+        });
+        localStorage.setItem('token', response.data.access_token);
+        axios.defaults.headers.common['Authorization'] = `Bearer ${localStorage.getItem('token')}`;
+        userStore.user.token = response.data.access_token;
+        userStore.checkToken();
+        router.push('/');
+    } catch (e) {
+        toastStore.error("Invalid Crethentials")
+    }
 }
 </script>
 
@@ -58,15 +75,16 @@ const login = () => {
     padding: 8px;
 }
 input {
-    padding: 8px;
+    padding: 12px;
     width: 100%;
     margin-top: 16px;
     background: 
-    linear-gradient(#5083cf, #5083cf) center bottom 5px /calc(100% - 10px) 2px no-repeat;
+    linear-gradient(#5083cf, #5083cf) center bottom 5px /calc(100% - 10px) 1px no-repeat;
     border: 0;
 }
 button {
     border: 0;
+    border-radius: 0;
 }
 h3 {
     margin: 0;

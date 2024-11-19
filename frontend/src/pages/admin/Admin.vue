@@ -1,20 +1,30 @@
 <script setup>
+import { RouterLink } from 'vue-router';
+
 </script>
 
 <template>
 <div class="container">
   <div class="sidenav">
-    <a href="#about">Users</a>
-    <a href="#services">Problems</a>
-    <a href="#clients">Groups</a>
-    <a href="#contact">Contests</a>
+    <RouterLink class="link" to="/admin/users">Users</RouterLink>
+    <RouterLink class="link" to="/admin/problems">Problems</RouterLink>
+    <RouterLink class="link" to="/admin/groups">Groups</RouterLink>
+    <RouterLink class="link" to="/admin/contests">Contests</RouterLink>
+  </div>
+  <div class="content-contaienr">
+    <router-view></router-view>
   </div>
 </div>
+    
 </template>
 
 <style scoped>
+.content-contaienr {
+  width: 100%;
+}
 .container {
   position: relative;
+  display: flex;
 }
 .sidenav {
   height: 100%;
@@ -26,9 +36,8 @@
   background-color: #4673b6;
   flex-direction: column;
   overflow-x: hidden;
-  padding-top: 20px;
 }
-.sidenav > a {
+.link {
   text-decoration: none;
   color: white;
   padding: 8px;

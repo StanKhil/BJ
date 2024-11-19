@@ -3,23 +3,23 @@ import { ref } from 'vue';
 import axios from 'axios';
 import Loader from '@/components/UI/Loader.vue';
 import router from '@/router';
+import { useRoute } from 'vue-router';
+
+const route = useRoute();
 
 const loading = ref(true);
-const groups = ref([]);
-const page = ref(1);
-const total = ref(0);
-const getGroups = async () => {
+const contests = ref([]);
+const getContests = async () => {
   try {
-    const response = await axios.get('/teams');
-    groups.value = response.data.data;
-    total.value = response.data.meta.lastPage;
+    const response = await axios.get(`/contests/team/${route.params.id}`);
+    contests.value = response.data;
   } catch(e) {
     console.log(e)
   } finally {
     loading.value = false;
   }
 }
-getGroups()
+getContests()
 </script>
 
 <template>
@@ -30,24 +30,20 @@ getGroups()
       </div>
     </div>
     <div class="container-content" v-else>
-      <div class="group-list">
-        <div v-for="group in groups" class="group" @click="router.push(`/groups/${group.id}`)">
-          <div class="groupname">
-           {{group.name}}
-          </div>
+      <div class="contest-list">
+        <div v-for="contest in contests" class="contest" @click="router.push(`/contest/${contest.id}`)">
+         <div class="contestname">
+          {{contest.name}} ( {{ new Date(contest.timeStart).toLocaleString() }} - {{ new Date(contest.timeEnd).toLocaleString() }} )
+         </div>
         </div>
-      </div>
-      <div class="pagination" v-if="total > 1">
-        <button v-if="page !== 1" @click="page -= 1"><</button>
-        <button>{{ page }}</button>
-        <button v-if="page !== total" @click="page += 1">></button>
       </div>
     </div>
   </div>
 </template>
 
 <style scoped>
-.group {
+.contest {
+  cursor: pointer;
   display: flex;
   background-color: #5083cf;
   padding: 16px;
@@ -56,21 +52,17 @@ getGroups()
   border-radius: 8px;
   justify-content: space-between;
   align-items: center;
-  cursor: pointer;
 }
-.group-list {
+.contest-list {
   padding: 8px;
 }
 .container-content {
   padding: 2px;
   width: 100%;
   height: 100%;
-  display: flex;
   flex-direction: column;
   justify-content: space-between;
-  overflow: auto;
 }
-
 .load {
   position: absolute;
   top: 50%;
@@ -82,12 +74,4 @@ getGroups()
   height: 100%;
   position: relative;
 }
-.pagination {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-}
 </style>
-
-
-
