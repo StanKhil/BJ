@@ -21,6 +21,13 @@ services:
     depends_on:
       - database
       - redis
+  frontend:
+    image: bjfrontend:latest
+    container_name: "bjfrontend"
+    restart: unless-stopped
+    build: ../../frontend/
+    ports:
+      - 8080:8080
   redis:
     container_name: "bjredis"
     restart: unless-stopped
