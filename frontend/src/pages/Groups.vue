@@ -6,10 +6,13 @@ import router from '@/router';
 
 const loading = ref(true);
 const groups = ref([]);
+const page = ref(1);
+const total = ref(0);
 const getGroups = async () => {
   try {
     const response = await axios.get('/teams');
     groups.value = response.data.data;
+    total.value = response.data.meta.lastPage;
   } catch(e) {
     console.log(e)
   } finally {
@@ -34,6 +37,11 @@ getGroups()
           </div>
         </div>
       </div>
+      <div class="pagination" v-if="total > 1">
+        <button v-if="page !== 1" @click="page -= 1"><</button>
+        <button>{{ page }}</button>
+        <button v-if="page !== total" @click="page += 1">></button>
+      </div>
     </div>
   </div>
 </template>
@@ -57,6 +65,7 @@ getGroups()
   padding: 2px;
   width: 100%;
   height: 100%;
+  display: flex;
   flex-direction: column;
   justify-content: space-between;
   overflow: auto;
@@ -72,6 +81,11 @@ getGroups()
   width: 100%;
   height: 100%;
   position: relative;
+}
+.pagination {
+  width: 100%;
+  display: flex;
+  justify-content: center;
 }
 </style>
 

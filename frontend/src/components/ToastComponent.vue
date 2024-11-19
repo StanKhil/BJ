@@ -16,7 +16,7 @@ const toastStore = useToastStore();
  width: 200px;
  height: 100px;
  border: 1px solid black;
- position: absolute;
+ position: fixed;
  bottom: 0;
  right: 0;
  justify-content: center;
@@ -29,6 +29,7 @@ const toastStore = useToastStore();
 }
 .error {
   background-color: red;
+  color: white;
 }
 .content {
   display: flex;

@@ -3,11 +3,14 @@ import { useRouter } from 'vue-router'
 import {ref} from 'vue'
 import axios from 'axios';
 import { useUserStore } from '@/stores/user.store';
+import { useToastStore } from '@/stores/toast.store';
 
 const router = useRouter()
 const userStore = useUserStore();
 const username = ref("")
 const password = ref("")
+
+const toastStore = useToastStore();
 
 const login = async () => {
     try {
@@ -21,7 +24,7 @@ const login = async () => {
         userStore.checkToken();
         router.push('/');
     } catch (e) {
-        console.log(e)
+        toastStore.error("Invalid Crethentials")
     }
 }
 </script>

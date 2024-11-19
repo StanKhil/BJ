@@ -3,6 +3,7 @@ import { onMounted, reactive, ref } from 'vue';
 import axios from 'axios';
 import Loader from '@/components/UI/Loader.vue';
 import { useRoute } from 'vue-router';
+import router from '@/router';
 
 const route = useRoute();
 const loading = ref(true);
@@ -73,7 +74,7 @@ onMounted(async () => {
           </div>
         </div>
         <div v-for="problem in problemsResult" class="row">
-          <div class="td problem-name">
+          <div class="td problem-name" @click="router.push(`/problem/${problem.id}`)">
             {{ problem.name }}
           </div>
           <div v-for="user in users" class="td">
@@ -95,19 +96,6 @@ onMounted(async () => {
   overflow: hidden;
   white-space:nowrap;
   text-overflow: ellipsis;
-}
-.problems {
-  display: flex;
-  background-color: #5083cf;
-  padding: 16px;
-  color: white;
-  margin-top: 4px;
-  border-radius: 8px;
-  justify-content: space-between;
-  align-items: center;
-}
-.problems-list {
-  padding: 8px;
 }
 .container {
   padding: 2px;

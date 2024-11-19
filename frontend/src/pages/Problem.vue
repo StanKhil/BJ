@@ -2,10 +2,11 @@
 import { reactive, ref } from 'vue';
 import axios from 'axios';
 import Loader from '@/components/UI/Loader.vue';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import MarkdownRenderer from '@/components/MarkdownRenderer.vue';
 
 const route = useRoute();
+const router = useRouter();
 const loading = ref(true);
 const name = ref("");
 const description = ref("");
@@ -86,13 +87,13 @@ getProblem()
               <option>cpp</option>
             </select>
             <textarea v-model="submmision.code" placeholder="Send yor submmision" required>My code</textarea>
-            <button type="submit">Enter</button>
+            <button type="submit" :disabled="reload">Enter</button>
           </form>
           <div class="submission-list"> 
             <div class="reload-container">
               <button :class="'reload-button ' + (reload ? 'rotate': '')" :disabled="reload" @click="getSubmissions">&#x21bb;</button>
             </div>
-            <div v-for="sub in submissions" class="submission">
+            <div v-for="sub in submissions" class="submission" @click="router.push(`/submission/${sub.id}`)">
               {{ sub.verdict }} ({{ sub.createdAt }})
             </div>
           </div>
@@ -179,6 +180,7 @@ select {
   background-color: #5083cf;
   color: white;
   border: 1px solid white;
+  cursor: pointer;
 }
 .reload-button {
   font-size: xx-large;

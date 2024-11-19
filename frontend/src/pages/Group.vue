@@ -33,7 +33,7 @@ getContests()
       <div class="contest-list">
         <div v-for="contest in contests" class="contest" @click="router.push(`/contest/${contest.id}`)">
          <div class="contestname">
-          {{contest.name}} ({{ new Date(contest.timeEnd).toLocaleDateString() }})
+          {{contest.name}} ( {{ new Date(contest.timeStart).toLocaleString() }} - {{ new Date(contest.timeEnd).toLocaleString() }} )
          </div>
         </div>
       </div>

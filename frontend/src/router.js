@@ -26,6 +26,7 @@ import ProblemsCreate from './pages/admin/problems/ProblemsCreate.vue'
 import ProblemsEdit from './pages/admin/problems/ProblemsEdit.vue'
 import ProblemsDelete from './pages/admin/problems/ProblemsDelete.vue'
 import Problem from './pages/Problem.vue'
+import Submission from './pages/Submission.vue'
 
 const routes = [
   { path: '/login', component: Login, name: 'login' },
@@ -58,6 +59,7 @@ const routes = [
   { path: '/problems', component: Problems },
   { path: '/groups/:id', component: Group },
   { path: '/contest/:id', component: Contest },
+  { path: '/submission/:id', component: Submission },
   { path: '/problem/:id', component: Problem }
 ]
 
