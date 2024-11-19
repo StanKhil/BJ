@@ -173,7 +173,7 @@ export class ContestsService {
       data: {
         ...(dto.name && { name: dto.name }),
         ...(dto.timeEnd && { timeEnd: dto.timeEnd }),
-        ...(dto.timeStart && { timeEnd: dto.timeStart }),
+        ...(dto.timeStart && { timeStart: dto.timeStart }),
         ...(dto.problems && {
           problems: {
             set: dto.problems.map((id) => ({ id })),
