@@ -6,10 +6,12 @@ import { useRoute, useRouter } from 'vue-router';
 const router = useRouter();
 const route = useRoute();
 
+const teamId = ref('');
 const name = ref('');
 const problems = ref([]);
 const searchedProblems = ref([]);
 const timeEnd = ref("");
+const timeStart = ref("");
 const searchProblemInput = ref(null);
 
 const edit = async () => {
@@ -17,7 +19,8 @@ const edit = async () => {
     await axios.patch(`/contests/${route.params.id}`, {
       name: name.value,
       problems: problems.value.map((problem) => problem.id),
-      timeEnd: timeEnd.value
+      timeEnd: timeEnd.value,
+      timeStart: timeStart.value,
     });
     await router.push('/admin/contests');
   } catch (e) {
@@ -58,9 +61,11 @@ const removeProblem = async(problem)=>{
 const getContest = async () => {
   try {
     const response = await axios.get(`/contests/${route.params.id}`);
-    problems.value = response.data.problems
-    name.value = response.data.name
+    problems.value = response.data.problems;
+    name.value = response.data.name;
     timeEnd.value = (new Date(response.data.timeEnd)).toISOString().replace("Z", "").substring(0, 16);
+    timeStart.value = (new Date(response.data.timeStart)).toISOString().replace("Z", "").substring(0, 16);
+    teamId.value = response.data.teamId;
   } catch(e) {
     console.log(e);
   }
@@ -72,7 +77,7 @@ getContest()
 <template>
   <div class="container">
     <div class="title">
-      <h3>Edit</h3>
+      <h3>Edit: {{ teamId }}</h3>
     </div>
     <form class="main" @submit.prevent="edit">
       <div class="input-container">
@@ -91,7 +96,14 @@ getContest()
           </div>
         </div>
         <input v-model="name" placeholder="Enter your contestname" required>
-        <input v-model="timeEnd" placeholder="Enter your timeEnd" type="datetime-local" required>
+        <div class="date-container">
+          <label for="timeEnd">timeEnd</label>
+          <input v-model="timeEnd" placeholder="Enter your timeEnd" type="datetime-local" required id="timeEnd">
+        </div>
+        <div class="date-container">
+          <label for="timeStart">timeStart</label>
+          <input v-model="timeStart" placeholder="Enter your timeStart" type="datetime-local" required id="timeStart">
+        </div>
       </div>
       <button type="submit">Enter</button>
     </form>
@@ -173,5 +185,14 @@ select {
   border-radius: 4px;
   padding: 4px;
   cursor: pointer;
+}
+.date-container {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  padding: 12px;
+}
+.date-container > input {
+  margin: 0;
 }
 </style>

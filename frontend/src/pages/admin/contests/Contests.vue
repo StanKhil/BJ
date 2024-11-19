@@ -6,6 +6,8 @@ import router from '@/router';
 
 const loading = ref(true);
 const contests = ref([]);
+const total = ref(0);
+const page = ref(1);
 const searchContests = async (event) => {
   if (!event.target.value) {
     await getContests();
@@ -22,8 +24,9 @@ const searchContests = async (event) => {
 }
 const getContests = async () => {
   try {
-    const response = await axios.get('/contests');
+    const response = await axios.get('/contests', { params: { page: page.value } });
     contests.value = response.data.data;
+    total.value = response.data.meta.lastPage;
   } catch(e) {
     console.log(e)
   } finally {
@@ -56,9 +59,15 @@ getContests()
         </div>
       </div>
     </div>
-
-    <div class="create">
-      <button @click="router.push('/admin/contests/create')">create</button>
+    <div>
+      <div class="pagination" v-if="total > 1">
+        <button v-if="page !== 1" @click="page -= 1"><</button>
+        <button>{{ page }}</button>
+        <button v-if="page !== total" @click="page += 1">></button>
+      </div>
+      <div class="create">
+        <button @click="router.push('/admin/contests/create')">create</button>
+      </div>
     </div>
   </div>
 
@@ -69,8 +78,10 @@ getContests()
   overflow: hidden;
   white-space:nowrap;
   text-overflow: ellipsis;
+  max-width: 200px;
 }
 .contest {
+  width: 100%;
   display: flex;
   background-color: #5083cf;
   padding: 16px;
@@ -114,5 +125,10 @@ getContests()
 }
 .tools > button {
   margin-left: 4px;
+}
+.pagination {
+  width: 100%;
+  display: flex;
+  justify-content: center;
 }
 </style>

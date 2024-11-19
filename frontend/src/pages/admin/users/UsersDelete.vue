@@ -7,7 +7,7 @@ const router = useRouter();
 const route = useRoute();
 const username = ref('');
 
-const user = async () => {
+const get = async () => {
   try {
     const response = await axios.get(`/users/${route.params.id}`);
     username.value = response.data.username;
@@ -23,7 +23,7 @@ const deleteUser = async () => {
     console.log(e)
   }
 }
-user();
+get();
 </script>
 
 <template>

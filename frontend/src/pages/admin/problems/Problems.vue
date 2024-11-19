@@ -24,7 +24,7 @@ const searchProblems = async (event) => {
 }
 const getProblems = async () => {
   try {
-    const response = await axios.get('/problems');
+    const response = await axios.get('/problems', { params: { page: page.value } });
     problems.value = response.data.data;
     total.value = response.data.meta.lastPage;
   } catch(e) {
@@ -79,8 +79,10 @@ getProblems()
   overflow: hidden;
   white-space:nowrap;
   text-overflow: ellipsis;
+  max-width: 200px;
 }
 .problems {
+  width: 100%;
   display: flex;
   background-color: #5083cf;
   padding: 16px;

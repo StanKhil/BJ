@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, reactive, ref } from 'vue';
+import { computed, onMounted, reactive, ref } from 'vue';
 import axios from 'axios';
 import Loader from '@/components/UI/Loader.vue';
 import router from '@/router';
@@ -11,6 +11,8 @@ const contest = reactive({
   id: '',
   teamid: '',
   problems: [],
+  timeStart: '',
+  timeEnd: ''
 })
 const users = ref([])
 const problemsResult = ref([]);
@@ -20,6 +22,8 @@ const getProblems = async () => {
     contest.problems = response.data.problems;
     contest.teamid = response.data.teamId;
     contest.id = response.data.id;
+    contest.timeStart = (new Date(response.data.timeStart)).getTime();
+    contest.timeEnd = (new Date(response.data.timeEnd)).getTime();
   } catch(e) {
     console.log(e)
   }
@@ -35,6 +39,8 @@ const getResult = async () => {
     loading.value = false;
   }
 }
+const now = computed(() => (new Date()).getTime());
+
 onMounted(async () => {
   await getProblems()
   await getResult()
@@ -50,6 +56,9 @@ onMounted(async () => {
       </div>
     </div>
     <div class="container" v-else>
+      <div class="time-container">
+        <progress class="time" :value="now - contest.timeStart" :max="contest.timeEnd - contest.timeStart"></progress>
+      </div>
       <div class="table">
         <div class="row">
           <div class="td">+</div>
@@ -129,5 +138,14 @@ onMounted(async () => {
   color: white;
   background-color: #5083cf;
   border: 1px solid white;
+}
+.time-container {
+  width: 100%;
+  padding: 4px;
+}
+.time {
+  width: 100%;
+  background-color: #5083cf;
+  color: #5083cf;
 }
 </style>

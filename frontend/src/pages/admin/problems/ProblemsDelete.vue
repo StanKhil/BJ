@@ -7,9 +7,9 @@ const router = useRouter();
 const route = useRoute();
 const name = ref('');
 
-const user = async () => {
+const get = async () => {
   try {
-    const response = await axios.get(`problems/${route.params.id}`);
+    const response = await axios.get(`/problems/${route.params.id}`);
     name.value = response.data.name;
   } catch(e) {
     console.log(e);
@@ -23,7 +23,7 @@ const deleteProblem = async () => {
     console.log(e)
   }
 }
-user();
+get();
 </script>
 
 <template>
