@@ -2,6 +2,7 @@
 import { ref } from 'vue';
 import axios from 'axios';
 import { useRoute, useRouter } from 'vue-router';
+import moment from 'moment';
 
 const router = useRouter();
 const route = useRoute();
@@ -19,8 +20,8 @@ const edit = async () => {
     await axios.patch(`/contests/${route.params.id}`, {
       name: name.value,
       problems: problems.value.map((problem) => problem.id),
-      timeEnd: timeEnd.value,
-      timeStart: timeStart.value,
+      timeEnd: (new Date(timeEnd.value)).toISOString(),
+      timeStart: (new Date(timeStart.value)).toISOString(),
     });
     await router.push('/admin/contests');
   } catch (e) {
@@ -63,8 +64,8 @@ const getContest = async () => {
     const response = await axios.get(`/contests/${route.params.id}`);
     problems.value = response.data.problems;
     name.value = response.data.name;
-    timeEnd.value = (new Date(response.data.timeEnd)).toISOString().replace("Z", "").substring(0, 16);
-    timeStart.value = (new Date(response.data.timeStart)).toISOString().replace("Z", "").substring(0, 16);
+    timeEnd.value = moment(response.data.timeEnd).format("YYYY-MM-DDTHH:mm:ss");
+    timeStart.value = moment(response.data.timeStart).format("YYYY-MM-DDTHH:mm:ss");
     teamId.value = response.data.teamId;
   } catch(e) {
     console.log(e);

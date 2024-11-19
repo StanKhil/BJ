@@ -1,8 +1,7 @@
 <script setup>
-import { computed, onMounted, reactive, ref } from 'vue';
+import { onMounted, reactive, ref } from 'vue';
 import axios from 'axios';
 import Loader from '@/components/UI/Loader.vue';
-import router from '@/router';
 import { useRoute } from 'vue-router';
 
 const route = useRoute();
@@ -14,6 +13,7 @@ const contest = reactive({
   timeStart: '',
   timeEnd: ''
 })
+const now = ref(new Date());
 const users = ref([])
 const problemsResult = ref([]);
 const getProblems = async () => {
@@ -22,8 +22,8 @@ const getProblems = async () => {
     contest.problems = response.data.problems;
     contest.teamid = response.data.teamId;
     contest.id = response.data.id;
-    contest.timeStart = (new Date(response.data.timeStart)).getTime();
-    contest.timeEnd = (new Date(response.data.timeEnd)).getTime();
+    contest.timeStart = (new Date(response.data.timeStart));
+    contest.timeEnd = (new Date(response.data.timeEnd));
   } catch(e) {
     console.log(e)
   }
@@ -39,11 +39,13 @@ const getResult = async () => {
     loading.value = false;
   }
 }
-const now = computed(() => (new Date()).getTime());
 
 onMounted(async () => {
   await getProblems()
   await getResult()
+  setInterval(() => {
+    now.value = new Date();
+  }, 1000)
 })
 
 </script>
@@ -57,20 +59,24 @@ onMounted(async () => {
     </div>
     <div class="container" v-else>
       <div class="time-container">
+        <div class="time-title">
+          <div>{{ contest.timeStart.toLocaleTimeString('en-US') }}</div>
+          <div>{{ contest.timeEnd.toLocaleTimeString('en-US') }}</div>
+        </div>
         <progress class="time" :value="now - contest.timeStart" :max="contest.timeEnd - contest.timeStart"></progress>
       </div>
       <div class="table">
         <div class="row">
           <div class="td">+</div>
-          <div v-for="problem in problemsResult" @click="router.push(`/problem/${problem.id}`)" class="td">
-            {{ problem.name }}
-          </div>
-        </div>
-        <div v-for="user in users" class="row">
-          <div class="td">
+          <div v-for="user in users"class="td user-name">
             {{ user.username }}
           </div>
-          <div v-for="problem in problemsResult" class="td">
+        </div>
+        <div v-for="problem in problemsResult" class="row">
+          <div class="td problem-name">
+            {{ problem.name }}
+          </div>
+          <div v-for="user in users" class="td">
             <div v-for="result in problem.submission" >
               <div v-if="result.user.id === user.id">{{ result.verdict }}</div>
             </div>
@@ -85,7 +91,7 @@ onMounted(async () => {
 </template>
 
 <style scoped>
-.problem-name {
+.problem-name, .user-name {
   overflow: hidden;
   white-space:nowrap;
   text-overflow: ellipsis;
@@ -125,6 +131,7 @@ onMounted(async () => {
   width: 100%;
   height: 100%;
   display: flex;
+  overflow: auto;
 }
 .row {
   height: 100%;
@@ -142,10 +149,21 @@ onMounted(async () => {
 .time-container {
   width: 100%;
   padding: 4px;
+  display: flex;
+  flex-direction: column;
 }
-.time {
+progress {
+  border: 1px solid #5083cf;
   width: 100%;
+}
+progress::-webkit-progress-bar {
+  background-color: white;
+}
+progress::-webkit-progress-value {
   background-color: #5083cf;
-  color: #5083cf;
+}
+.time-title {
+  display: flex;
+  justify-content: space-between;
 }
 </style>
