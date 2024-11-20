@@ -33,7 +33,7 @@ model Problem {
   testCases TestCase[]
   tester Tester?
   draft Boolean @default(true)
-  submission Submission[]
+  submissions Submission[]
   contests Contest[]
 }
 model Tester {

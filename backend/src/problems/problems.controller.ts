@@ -25,6 +25,7 @@ import {
 } from './dto';
 import { PageOptionsDto } from 'src/shared/dto/page-options.dto';
 import { SearchDto } from 'src/shared/dto/search.dto';
+import { GetUser } from 'src/auth/decorators/get-user.decorator';
 
 @ApiBearerAuth()
 @Roles(Role.ADMIN)
@@ -35,8 +36,15 @@ export class ProblemsController {
   constructor(private readonly problemsService: ProblemsService) {}
   @Roles(Role.ADMIN, Role.USER)
   @Get('')
-  async getProblems(@Query() query: PageOptionsDto) {
-    return await this.problemsService.get(query);
+  async getProblems(
+    @Query() query: PageOptionsDto,
+    @GetUser('id') userId: string,
+  ) {
+    return await this.problemsService.get(query, userId);
+  }
+  @Get('admin')
+  async getProblemsAdmin(@Query() query: PageOptionsDto) {
+    return await this.problemsService.getAdmin(query);
   }
   @Roles(Role.ADMIN, Role.USER)
   @Get('search')

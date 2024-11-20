@@ -74,7 +74,7 @@ export class ContestsService {
         },
       },
       include: {
-        submission: {
+        submissions: {
           distinct: ['userId'],
           where: {
             createdAt: {
