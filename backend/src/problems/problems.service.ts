@@ -19,7 +19,7 @@ const paginate: PaginateFunction = paginator({ perPage: 10 });
 export class ProblemsService {
   constructor(private prisma: PrismaService) {}
   async get(query: PageOptionsDto, userId: string) {
-    const problems = await paginate(
+    const paginated = await paginate(
       this.prisma.problem,
       {
         where: {
@@ -46,7 +46,7 @@ export class ProblemsService {
       },
       { page: query.page },
     );
-    const transformedProblems = problems.data.map(
+    const transformedProblems = paginated.data.map(
       (problem: ProblemSubmissions) => {
         return {
           ...problem,
@@ -55,7 +55,7 @@ export class ProblemsService {
       },
     );
     transformedProblems.forEach((problem) => delete problem.submissions);
-    return transformedProblems;
+    return { data: transformedProblems, meta: paginated.meta };
   }
   async getAdmin(query: PageOptionsDto) {
     return await paginate(
