@@ -50,7 +50,13 @@ getProblems()
           <input type="text" placeholder="Search..." @input="searchProblems">
         </div>
         <div class="problem-list">
-          <div v-for="problem in problems" class="problems" @click="router.push(`/problem/${problem.id}`)">
+          <div 
+            v-for="problem in problems" 
+            :key="problem.id" 
+            class="problems" 
+            :style="problem.submission?.verdict === 'OK' ? 'background-color: #d4edda; color: #155724;' : ''"
+            @click="router.push(`/problem/${problem.id}`)"
+          >
             <div class="problem-name">
               {{ problem.name }} ({{ problem.draft }}) ({{ problem.rating }})
             </div>
@@ -75,6 +81,17 @@ getProblems()
 .problems {
   display: flex;
   background-color: #5083cf;
+  padding: 16px;
+  color: white;
+  margin-top: 4px;
+  border-radius: 8px;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+}
+.solved-problems {
+  display: flex;
+  background-color: #33ca15;
   padding: 16px;
   color: white;
   margin-top: 4px;

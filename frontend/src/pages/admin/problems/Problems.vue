@@ -24,7 +24,7 @@ const searchProblems = async (event) => {
 }
 const getProblems = async () => {
   try {
-    const response = await axios.get('/problems', { params: { page: page.value } });
+    const response = await axios.get('/problems/admin', { params: { page: page.value } });
     problems.value = response.data.data;
     total.value = response.data.meta.lastPage;
   } catch(e) {
