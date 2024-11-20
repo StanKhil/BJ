@@ -11,13 +11,53 @@ import {
 import { SearchDto } from 'src/shared/dto/search.dto';
 import { PaginateFunction, paginator } from 'src/shared/utils/pagination.util';
 import { PageOptionsDto } from 'src/shared/dto/page-options.dto';
+import { ProblemSubmissions } from './interface/problem.submissions.interface';
 
 const paginate: PaginateFunction = paginator({ perPage: 10 });
 
 @Injectable()
 export class ProblemsService {
   constructor(private prisma: PrismaService) {}
-  async get(query: PageOptionsDto) {
+  async get(query: PageOptionsDto, userId: string) {
+    const problems = await paginate(
+      this.prisma.problem,
+      {
+        where: {
+          draft: false,
+        },
+        orderBy: {
+          name: query.order,
+        },
+        include: {
+          submissions: {
+            where: {
+              userId,
+            },
+            select: {
+              verdict: true,
+              id: true,
+            },
+            orderBy: {
+              createdAt: 'desc',
+            },
+            take: 1,
+          },
+        },
+      },
+      { page: query.page },
+    );
+    const transformedProblems = problems.data.map(
+      (problem: ProblemSubmissions) => {
+        return {
+          ...problem,
+          submission: problem.submissions[0] || null,
+        };
+      },
+    );
+    transformedProblems.forEach((problem) => delete problem.submissions);
+    return transformedProblems;
+  }
+  async getAdmin(query: PageOptionsDto) {
     return await paginate(
       this.prisma.problem,
       {

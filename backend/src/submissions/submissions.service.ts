@@ -49,7 +49,7 @@ export class SubmissionsService {
   }
   async create(id: string, userId: string, dto: CreateSubmissionDto) {
     const problem = await this.prisma.problem.findUnique({
-      where: { id },
+      where: { id, draft: false },
       include: {
         testCases: true,
         tester: true,
