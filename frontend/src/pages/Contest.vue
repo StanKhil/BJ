@@ -33,6 +33,7 @@ const getResult = async () => {
   try {
     users.value = (await axios.get(`/teams/${contest.teamid}`)).data.participants;
     const response = await axios.get(`/contests/results/${route.params.id}`);
+    problemsResult.value = response.data;
   } catch(e) {
     console.log(e)
   } finally {
