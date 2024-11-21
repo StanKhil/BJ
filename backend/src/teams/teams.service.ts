@@ -30,28 +30,29 @@ export class TeamsService {
       { page: query.page },
     );
   }
-  async search(query: SearchDto, userId: string) {
+  async getAdmin(query: PageOptionsDto) {
+    return await paginate(
+      this.prisma.team,
+      {
+        include: {
+          participants: {
+            omit: { password: true },
+          },
+        },
+      },
+      { page: query.page },
+    );
+  }
+  async search(query: SearchDto) {
     return await this.prisma.team.findMany({
       where: {
         name: { contains: query.search },
-        participants: {
-          some: {
-            id: userId,
-          },
-        },
       },
     });
   }
-  async getById(id: string, userId: string) {
+  async getById(id: string) {
     return await this.prisma.team.findUnique({
-      where: {
-        id,
-        participants: {
-          some: {
-            id: userId,
-          },
-        },
-      },
+      where: { id },
       include: {
         participants: {
           omit: { password: true },

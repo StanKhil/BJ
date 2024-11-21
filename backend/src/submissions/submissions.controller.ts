@@ -19,11 +19,15 @@ import { PageOptionsDto } from 'src/shared/dto/page-options.dto';
 import { SearchDto } from 'src/shared/dto/search.dto';
 @ApiTags('submissions')
 @ApiBearerAuth()
-@Roles(Role.USER, Role.ADMIN)
 @UseGuards(JwtGuard, RolesGuard)
 @Controller('submissions')
 export class SubmissionsController {
   constructor(private readonly submissionsService: SubmissionsService) {}
+  @Roles(Role.ADMIN)
+  @Get('admin')
+  async getAdmin(@Query() query: PageOptionsDto) {
+    return await this.submissionsService.getAdmin(query);
+  }
   @Post(':id')
   async create(
     @GetUser('id') userId: string,
@@ -36,6 +40,7 @@ export class SubmissionsController {
   async get(@GetUser('id') userId: string, @Query() query: PageOptionsDto) {
     return await this.submissionsService.get(userId, query);
   }
+  @Roles(Role.ADMIN)
   @Get('search')
   async search(@Query() query: SearchDto) {
     return await this.submissionsService.search(query);
@@ -48,7 +53,7 @@ export class SubmissionsController {
     return await this.submissionsService.getByProblemId(problemId, userId);
   }
   @Get(':id')
-  async getById(@Param('id') id: string, @GetUser('id') userId: string) {
-    return await this.submissionsService.getById(id, userId);
+  async getById(@Param('id') id: string) {
+    return await this.submissionsService.getById(id);
   }
 }

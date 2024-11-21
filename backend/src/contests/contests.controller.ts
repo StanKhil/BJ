@@ -26,6 +26,11 @@ import { PageOptionsDto } from 'src/shared/dto/page-options.dto';
 @Controller('contests')
 export class ContestsController {
   constructor(private readonly contestsService: ContestsService) {}
+  @Roles(Role.ADMIN)
+  @Get('admin')
+  async getAdmin(@Query() query: PageOptionsDto) {
+    return await this.contestsService.getAdmin(query);
+  }
   @Get('')
   async get(@GetUser('id') userId: string, @Query() query: PageOptionsDto) {
     return await this.contestsService.get(query, userId);
@@ -38,13 +43,14 @@ export class ContestsController {
   async getByTeam(@GetUser('id') userId: string, @Param('id') id: string) {
     return await this.contestsService.getByTeam(userId, id);
   }
+  @Roles(Role.ADMIN)
   @Get('search')
-  async search(@Query() query: SearchDto, @GetUser('id') userId: string) {
-    return await this.contestsService.search(query, userId);
+  async search(@Query() query: SearchDto) {
+    return await this.contestsService.search(query);
   }
   @Get(':id')
-  async getById(@GetUser('id') userId: string, @Param('id') id: string) {
-    return await this.contestsService.getById(userId, id);
+  async getById(@Param('id') id: string) {
+    return await this.contestsService.getById(id);
   }
   @Roles(Role.ADMIN)
   @Post('')

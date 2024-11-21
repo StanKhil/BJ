@@ -32,15 +32,18 @@ export class TeamsController {
   async get(@GetUser('id') userId: string, @Query() query: PageOptionsDto) {
     return await this.teamsService.get(query, userId);
   }
-  @Roles(Role.ADMIN, Role.USER)
+  @Get('admin')
+  async getAdmin(@Query() query: PageOptionsDto) {
+    return await this.teamsService.getAdmin(query);
+  }
   @Get('search')
-  async search(@Query() query: SearchDto, @GetUser('id') userId: string) {
-    return await this.teamsService.search(query, userId);
+  async search(@Query() query: SearchDto) {
+    return await this.teamsService.search(query);
   }
   @Roles(Role.ADMIN, Role.USER)
   @Get(':id')
-  async getById(@Param('id') id: string, @GetUser('id') userId: string) {
-    return await this.teamsService.getById(id, userId);
+  async getById(@Param('id') id: string) {
+    return await this.teamsService.getById(id);
   }
   @Post('')
   async create(@GetUser('id') userId: string, @Body() dto: CreateTeamDto) {
