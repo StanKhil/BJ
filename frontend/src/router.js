@@ -27,6 +27,7 @@ import ProblemsEdit from './pages/admin/problems/ProblemsEdit.vue'
 import ProblemsDelete from './pages/admin/problems/ProblemsDelete.vue'
 import Problem from './pages/Problem.vue'
 import Submission from './pages/Submission.vue'
+import SubmissionAdmin from './pages/admin/submissions/Submission.vue'
 
 const routes = [
   { path: '/login', component: Login, name: 'login' },
@@ -50,6 +51,7 @@ const routes = [
       { path: 'problems/create', component: ProblemsCreate },
       { path: 'problems/edit/:id', component: ProblemsEdit },
       { path: 'problems/delete/:id', component: ProblemsDelete },
+      { path: 'submissions', component: SubmissionAdmin }
     ]
   },
   

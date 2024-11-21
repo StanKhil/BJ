@@ -10,6 +10,7 @@ import { RouterLink } from 'vue-router';
     <RouterLink class="link" to="/admin/problems">Problems</RouterLink>
     <RouterLink class="link" to="/admin/groups">Groups</RouterLink>
     <RouterLink class="link" to="/admin/contests">Contests</RouterLink>
+    <RouterLink class="link" to="/admin/submissions">Submissions</RouterLink>
   </div>
   <div class="content-contaienr">
     <router-view></router-view>
