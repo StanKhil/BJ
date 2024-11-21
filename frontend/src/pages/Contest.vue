@@ -34,6 +34,7 @@ const getResult = async () => {
     users.value = (await axios.get(`/teams/${contest.teamid}`)).data.participants;
     const response = await axios.get(`/contests/results/${route.params.id}`);
     problemsResult.value = response.data;
+    console.log(problemsResult.value)
   } catch(e) {
     console.log(e)
   } finally {
@@ -69,19 +70,26 @@ onMounted(async () => {
       <div class="table">
         <div class="row">
           <div class="td">+</div>
-          <div v-for="user in users"class="td user-name">
+          <div v-for="user in users" :key="user.id" class="td user-name">
             {{ user.username }}
           </div>
         </div>
-        <div v-for="problem in problemsResult" class="row">
+        <div v-for="problem in problemsResult" :key="problem.id" class="row">
           <div class="td problem-name" @click="router.push(`/problem/${problem.id}`)">
             {{ problem.name }}
           </div>
-          <div v-for="user in users" class="td">
-            <div v-for="result in problem.submission" >
-              <div v-if="result.user.id === user.id">{{ result.verdict }}</div>
+          <div v-for="user in users" :key="user.id" class="td">
+            <div v-if="problem.submissions && problem.submissions.length">
+              <div v-for="result in problem.submissions" :key="result.id">
+                <div v-if="result.user.id === user.id">
+                  {{ result.verdict }}
+                </div>
+              </div>
+              <div v-if="!problem.submissions.some((s) => s.user.id === user.id)">
+                0
+              </div>
             </div>
-            <div v-if="problem?.submission?.filter((s) => s.user.id === user.id).length === 0">
+            <div v-else>
               0
             </div>
           </div>
