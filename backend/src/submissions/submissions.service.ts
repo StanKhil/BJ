@@ -27,17 +27,33 @@ export class SubmissionsService {
       { page: query.page },
     );
   }
+  async getAdmin(query: PageOptionsDto) {
+    return await paginate(
+      this.prisma.submission,
+      {
+        orderBy: {
+          createdAt: query.order,
+        },
+      },
+      { page: query.page },
+    );
+  }
   async search(query: SearchDto) {
     return await this.prisma.submission.findMany({
       where: {
-        code: {
-          contains: query.search,
-        },
+        OR: [
+          { id: { contains: query.search } },
+          { user: { id: { contains: query.search } } },
+          { problem: { id: { contains: query.search } } },
+        ],
+      },
+      orderBy: {
+        createdAt: 'desc',
       },
     });
   }
-  async getById(id: string, userId: string) {
-    return await this.prisma.submission.findUnique({ where: { id, userId } });
+  async getById(id: string) {
+    return await this.prisma.submission.findUnique({ where: { id } });
   }
   async getByProblemId(problemId: string, userId: string) {
     return await this.prisma.submission.findMany({

@@ -33,17 +33,24 @@ export class ContestsService {
       { page: query.page },
     );
   }
-  async search(query: SearchDto, userId: string) {
+  async getAdmin(query: PageOptionsDto) {
+    return await paginate(
+      this.prisma.contest,
+      {
+        orderBy: {
+          name: query.order,
+        },
+        include: {
+          problems: true,
+        },
+      },
+      { page: query.page },
+    );
+  }
+  async search(query: SearchDto) {
     return await this.prisma.contest.findMany({
       where: {
         name: { contains: query.search },
-        team: {
-          participants: {
-            some: {
-              id: userId,
-            },
-          },
-        },
       },
     });
   }
@@ -118,18 +125,9 @@ export class ContestsService {
       },
     });
   }
-  async getById(userId: string, id: string) {
+  async getById(id: string) {
     return await this.prisma.contest.findUnique({
-      where: {
-        id,
-        team: {
-          participants: {
-            some: {
-              id: userId,
-            },
-          },
-        },
-      },
+      where: { id },
       include: {
         problems: true,
       },

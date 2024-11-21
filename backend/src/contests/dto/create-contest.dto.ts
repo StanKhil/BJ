@@ -1,12 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
-import {
-  IsArray,
-  IsDate,
-  IsNotEmpty,
-  IsString,
-  MinDate,
-} from 'class-validator';
+import { IsArray, IsDate, IsNotEmpty, IsString } from 'class-validator';
 
 export class CreateContestDto {
   @ApiProperty()
@@ -21,13 +15,11 @@ export class CreateContestDto {
   @IsNotEmpty()
   @Transform(({ value }) => new Date(value))
   @IsDate()
-  @MinDate(new Date())
   timeEnd: Date;
   @ApiProperty()
   @IsNotEmpty()
   @Transform(({ value }) => new Date(value))
   @IsDate()
-  @MinDate(new Date())
   timeStart: Date;
   @ApiProperty()
   @IsNotEmpty()
