@@ -4,59 +4,37 @@ import axios from 'axios';
 import Loader from '@/components/UI/Loader.vue';
 import router from '@/router';
 
-
-
 const loading = ref(false);
 const submissions = ref([]);
 const page = ref(1);
 const total = ref(1);
 const input = ref('');
-const flag = ref(false)
 
-const getSubmissionById = async (id) => {
-  try {
-    const response = await axios.get(`/submissions/${id.value}`);
-    submissions.value = [response.data];
-    if(response.data.id===undefined){
-        flag.value=true;
-    }
-  } catch (e) {
-    console.error(e);
-    console.log(id.value);
-    submissions.value = [];
-  }
-};
 
-const getSubmissionsByProblem = async (id) => {
-  try {
-    const response = await axios.get(`/submissions/problem/${id.value}`);
-    submissions.value = response.data;
-    flag.value=false;
-  } catch (e) {
-    console.error(e);
-    submissions.value = [];
-  }
-};
-
-const search = async (event) => {
-  if (!input.value) {
-    await getSubmissionsByProblem();
-  } else {
+const search = async () => {
     try {
-      loading.value = true;
-      await getSubmissionById(input);
-      if (flag.value === true) {
-        await getSubmissionsByProblem(input);
-      }
-    } catch (e) {
-      console.error(e);
-    } finally {
-      loading.value = false;
-    }
+    const response = await axios.get(`/submissions/search`,{params : {search : input.value}});
+    submissions.value = response.data;
+    total.value = response.data.meta.lastPage;
+  } catch (e) {
+    console.error(e);
+    submissions.value = [];
   }
 };
-</script>
 
+const getSubmissions = async () => {
+  try {
+    const response = await axios.get('/submissions/admin', { params: { page: page.value } });
+    submissions.value = response.data.data;
+    total.value = response.data.meta.lastPage;
+  } catch(e) {
+    console.log(e)
+  } finally {
+    loading.value = false;
+  }
+}
+getSubmissions()
+</script>
 <template>
     <div v-if="loading" class="loading">
       <div class="load">
@@ -78,13 +56,11 @@ const search = async (event) => {
           </div>
         </div>
       </div>
-      <div>
         <div class="pagination" v-if="total > 1">
-          <button v-if="page !== 1" @click="() => { page.value -= 1; getSubmissionsByProblem(); }"><</button>
+          <button v-if="page !== 1" @click="() => { page -= 1; getSubmissions();}"><</button>
           <button>{{ page }}</button>
-          <button v-if="page !== total" @click="() => { page.value += 1; getSubmissionsByProblem(); }">></button>
+          <button v-if="page !== total" @click="() => { page += 1; getSubmissions();}">></button>
         </div>
-      </div>
     </div>
 </template>
 
