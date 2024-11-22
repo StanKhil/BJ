@@ -10,7 +10,7 @@ const page = ref(1);
 const total = ref(0);
 const getGroups = async () => {
   try {
-    const response = await axios.get('/teams');
+    const response = await axios.get('/teams', { params: { page: page.value } });
     groups.value = response.data.data;
     total.value = response.data.meta.lastPage;
   } catch(e) {
@@ -38,9 +38,9 @@ getGroups()
         </div>
       </div>
       <div class="pagination" v-if="total > 1">
-        <button v-if="page !== 1" @click="page -= 1"><</button>
-        <button>{{ page }}</button>
-        <button v-if="page !== total" @click="page += 1">></button>
+          <button v-if="page !== 1" @click="() => { page -= 1; getGroups();}"><</button>
+          <button>{{ page }}</button>
+          <button v-if="page !== total" @click="() => { page += 1; getGroups();}">></button>
       </div>
     </div>
   </div>
