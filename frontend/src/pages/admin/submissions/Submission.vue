@@ -31,6 +31,7 @@ const getSubmissionsByProblem = async (id) => {
   try {
     const response = await axios.get(`/submissions/problem/${id.value}`);
     submissions.value = response.data;
+    flag.value=false;
   } catch (e) {
     console.error(e);
     submissions.value = [];
