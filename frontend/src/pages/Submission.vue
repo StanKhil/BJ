@@ -37,7 +37,10 @@ getSubmission();
         <Loader />
       </div>
       <div class="submission-container" v-else>
-        <textarea readonly>{{ submission.code }}</textarea>
+        <div class="text">
+          {{ submission.id }}
+        </div>
+        <textarea style="margin-bottom: 16px;" readonly>{{ submission.code }}</textarea>
         <div class="text">
           {{ submission.lang }}
         </div>
@@ -71,7 +74,7 @@ getSubmission();
 }
 .text  {
   background-color: #0066cc;
-  margin-top: 16px;
+  margin-bottom: 16px;
   padding: 4px;
   border-radius: 8px;
   color: white;

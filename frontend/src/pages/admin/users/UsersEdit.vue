@@ -9,11 +9,13 @@ const route = useRoute()
 const username = ref('');
 const password = ref('');
 const role = ref('');
+const id = ref('');
 const user = async () => {
   try {
     const response = await axios.get(`/users/${route.params.id}`);
     username.value = response.data.username;
     role.value = response.data.role;
+    id.value = response.data.id;
   } catch(e) {
     console.log(e);
   }
@@ -40,7 +42,7 @@ user();
 <template>
   <div class="container">
     <div class="title">
-      <h3>Edit</h3>
+      <h3>User id: {{ id }}</h3>
     </div>
     <form class="main" @submit.prevent="edit">
       <div class="input-container">

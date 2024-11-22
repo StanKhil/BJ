@@ -9,6 +9,7 @@ const users = ref([])
 const participants = ref([])
 const inputUserSearch = ref(null)
 const name = ref('');
+const id = ref('');
 const edit = async () => {
   try {
     await axios.patch(`/teams/${route.params.id}`, {
@@ -40,8 +41,9 @@ const getTeams = async () => {
   try {
     const response = await axios.get(`/teams/${route.params.id}`);
     console.log(response)
-    participants.value = response.data.participants
-    name.value = response.data.name
+    participants.value = response.data.participants;
+    name.value = response.data.name;
+    id.value = response.data.id;
   } catch(e) {
     console.log(e);
   }
@@ -67,7 +69,7 @@ getTeams()
 <template>
   <div class="container">
     <div class="title">
-      <h3>Edit</h3>
+      <h3>Group id: {{ id }}</h3>
     </div>
     <form class="main" @submit.prevent="edit">
       <div class="input-container">

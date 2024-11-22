@@ -4,35 +4,49 @@ import axios from 'axios';
 import Loader from '@/components/UI/Loader.vue';
 import router from '@/router';
 
-const loading = ref(true);
-const problems = ref([]);
+
+
+const loading = ref(false);
 const submissions = ref([]);
 const page = ref(1);
 const total = ref(1);
-const selectedProblem = ref('');
+const input = ref('');
+const flag = ref(false)
 
-const getProblems = async () => {
+const getSubmissionById = async (id) => {
   try {
-    loading.value = true;
-    const response = await axios.get('/problems', { params: { page: page.value } });
-    problems.value = response.data.problems;
-    total.value = response.data.totalPages;
+    const response = await axios.get(`/submissions/${id.value}`);
+    submissions.value = [response.data];
+    if(response.data.id===undefined){
+        flag.value=true;
+    }
   } catch (e) {
     console.error(e);
-  } finally {
-    loading.value = false;
+    console.log(id.value);
+    submissions.value = [];
   }
 };
 
+const getSubmissionsByProblem = async (id) => {
+  try {
+    const response = await axios.get(`/submissions/problem/${id.value}`);
+    submissions.value = response.data;
+  } catch (e) {
+    console.error(e);
+    submissions.value = [];
+  }
+};
 
-const searchProblem = async (event) => {
-  if (!event.target.value) {
-    await getProblems();
+const search = async (event) => {
+  if (!input.value) {
+    await getSubmissionsByProblem();
   } else {
     try {
       loading.value = true;
-      const response = await axios.get('/problems/search', { params: { search: event.target.value } });
-      problems.value = response.data.problems;
+      await getSubmissionById(input);
+      if (flag.value === true) {
+        await getSubmissionsByProblem(input);
+      }
     } catch (e) {
       console.error(e);
     } finally {
@@ -40,25 +54,8 @@ const searchProblem = async (event) => {
     }
   }
 };
-
-const getSubmissionsByProblem = async () => {
-  if (!selectedProblem.value) return;
-
-  try {
-    loading.value = true;
-    const response = await axios.get('/submissions', { params: { problemName: selectedProblem.value, page: page.value } });
-    submissions.value = response.data.submissions;
-    total.value = response.data.totalPages;
-  } catch (e) {
-    console.error(e);
-  } finally {
-    loading.value = false;
-  }
-};
-
-
-getProblems();
 </script>
+
 <template>
     <div v-if="loading" class="loading">
       <div class="load">
@@ -68,25 +65,14 @@ getProblems();
     <div class="container" v-else>
       <div class="problem-list-container">
         <div class="input-container">
-          <input type="text" placeholder="Search submissions..." @input="searchProblem">
+          <h3>Enter id of submission, problem or user</h3>
+          <input v-model="input" type="text" placeholder="Search submissions...">
+          <button @click="search">Search</button>
         </div>
         <div class="submission-list">
-          <div v-for="problem in problems" :key="problem.id" class="submission">
+          <div v-for="submission in submissions" :key="submission.id" class="submission" @click="router.push(`/submission/${submission.id}`)">
             <div class="submission-name">
-              {{ problem.name }} ({{ problem.draft }}) ({{ problem.rating }})
-            </div>
-            <button @click="() => { selectedProblem.value = problem.name; getSubmissionsByProblem(); }">
-              View Submissions
-            </button>
-          </div>
-        </div>
-      </div>
-      <div v-if="submissions.length">
-        <h3>Submissions for "{{ selectedProblem }}"</h3>
-        <div class="submission-list">
-          <div v-for="submission in submissions" :key="submission.id" class="submission">
-            <div class="submission-name">
-              Submission ID: {{ submission.id }} | Status: {{ submission.status }}
+                Submission ID: {{ submission.id }} | Verdict: {{ submission.verdict }} | User ID: {{ submission.userId }}
             </div>
           </div>
         </div>
@@ -100,9 +86,9 @@ getProblems();
       </div>
     </div>
 </template>
+
 <style scoped>
   .submission-name {
-    overflow: hidden;
     white-space:nowrap;
     text-overflow: ellipsis;
     max-width: 200px;
@@ -163,5 +149,9 @@ getProblems();
     width: 100%;
     display: flex;
     justify-content: center;
+  }
+  .input-container{
+    padding: 8px;
+    margin: 4px;
   }
 </style>

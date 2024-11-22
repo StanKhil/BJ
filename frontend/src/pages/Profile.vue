@@ -37,6 +37,9 @@ getMe();
       </div>
       <div class="profile-container" v-else>
         <div class="text">
+          id: {{ user.id }}
+        </div>
+        <div class="text">
           username: {{ user.username }}
         </div>
         <div class="text">
@@ -66,7 +69,7 @@ getMe();
   position: absolute;
 }
 .profile-container {
-  width: 200px;
+  width: 400px;
   display: flex;
   flex-direction: column;
   border: 2px solid #0066cc;

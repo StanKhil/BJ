@@ -27,6 +27,7 @@ const problem = reactive({
   description: '',
   draft: true,
   rating: 'easy',
+  id:'',
 })
 const testCases = ref([])
 const testCase = reactive({
@@ -96,6 +97,7 @@ const getProblem = async () => {
     problem.description = response.data.description;
     problem.draft = response.data.draft;
     problem.rating = response.data.rating;
+    problem.id = response.data.id;
   } catch(e) {
     console.log(e);
   }
@@ -126,7 +128,7 @@ getTester();
 <template>
   <div class="container">
     <div class="title">
-      <h3>Edit</h3>
+      <h3>Problem id: {{ problem.id }}</h3>
     </div>
     <div class="section">
       <h3 class="section-title" @click="problemSection = !problemSection">Problem</h3>
