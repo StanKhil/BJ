@@ -34,6 +34,7 @@ const routes = [
   { 
     path: '/admin',
     component: Admin,
+    name: 'admin',
     children: [
       { path: 'users', component: UsersAdmin},
       { path: 'users/create', component: UsersCreate },
@@ -73,7 +74,7 @@ router.beforeEach((to, from, next) => {
   const userStore = useUserStore();
   if (to.fullPath.startsWith('/admin') && userStore.user.role !== 'ADMIN') {
     next({name: 'home'})
-  } else if (userStore.user.token || to.name === 'login') {
+  } else if (userStore.user.token || to.name === 'login' || to.name === 'home') {
     next()
   } else {
     next({name: 'login'})

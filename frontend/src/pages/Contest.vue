@@ -61,8 +61,8 @@ onMounted(async () => {
     <div class="container" v-else>
       <div class="time-container">
         <div class="time-title">
-          <div>{{ contest.timeStart.toLocaleTimeString('en-US') }}</div>
-          <div>{{ contest.timeEnd.toLocaleTimeString('en-US') }}</div>
+          <div>{{ contest.timeStart.toLocaleString('en-US') }}</div>
+          <div>{{ contest.timeEnd.toLocaleString('en-US') }}</div>
         </div>
         <progress class="time" :value="now - contest.timeStart" :max="contest.timeEnd - contest.timeStart"></progress>
       </div>
@@ -78,17 +78,12 @@ onMounted(async () => {
             {{ problem.name }}
           </div>
           <div v-for="user in users" :key="user.id" class="td">
-            <div v-if="problem.submissions && problem.submissions.length">
-              <div v-for="result in problem.submissions" :key="result.id">
-                <div v-if="result.user.id === user.id">
-                  {{ result.verdict }}
-                </div>
-              </div>
-              <div v-if="!problem.submissions.some((s) => s.user.id === user.id)">
-                0
+            <div v-for="result in problem.submissions" :key="result.id">
+              <div v-if="result.user.id === user.id">
+                {{ result.verdict }}
               </div>
             </div>
-            <div v-else>
+            <div v-if="!problem.submissions.some((s) => s.user.id === user.id)">
               0
             </div>
           </div>

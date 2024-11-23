@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import axios from 'axios';
 import Loader from '@/components/UI/Loader.vue';
 import router from '@/router';
@@ -10,12 +10,15 @@ const page = ref(1);
 const total = ref(1);
 const input = ref('');
 
-
 const search = async () => {
     try {
-    const response = await axios.get(`/submissions/search`,{params : {search : input.value}});
-    submissions.value = response.data;
-    total.value = response.data.meta.lastPage;
+    if (input.value) {
+      const response = await axios.get(`/submissions/search`,{params : {search : input.value}});
+      submissions.value = response.data;
+      total.value = 1;
+    } else {
+      await getSubmissions();
+    }
   } catch (e) {
     console.error(e);
     submissions.value = [];
@@ -33,7 +36,10 @@ const getSubmissions = async () => {
     loading.value = false;
   }
 }
-getSubmissions()
+watch(page, async () => {
+  await getSubmissions();
+})
+getSubmissions();
 </script>
 <template>
     <div v-if="loading" class="loading">
@@ -43,10 +49,12 @@ getSubmissions()
     </div>
     <div class="container" v-else>
       <div class="problem-list-container">
-        <div class="input-container">
+        <div class="search-container">
           <h3>Enter id of submission, problem or user</h3>
-          <input v-model="input" type="text" placeholder="Search submissions...">
-          <button @click="search">Search</button>
+          <div class="input-container">
+            <input v-model="input" type="text" placeholder="Search submissions...">
+            <button @click="search">Search</button>
+          </div>
         </div>
         <div class="submission-list">
           <div v-for="submission in submissions" :key="submission.id" class="submission" @click="router.push(`/submission/${submission.id}`)">
@@ -57,9 +65,9 @@ getSubmissions()
         </div>
       </div>
         <div class="pagination" v-if="total > 1">
-          <button v-if="page !== 1" @click="() => { page -= 1; getSubmissions();}"><</button>
+          <button v-if="page !== 1" @click="page -= 1"><</button>
           <button>{{ page }}</button>
-          <button v-if="page !== total" @click="() => { page += 1; getSubmissions();}">></button>
+          <button v-if="page !== total" @click="page += 1">></button>
         </div>
     </div>
 </template>
@@ -68,7 +76,8 @@ getSubmissions()
   .submission-name {
     white-space:nowrap;
     text-overflow: ellipsis;
-    max-width: 200px;
+    overflow: hidden;
+    width: 100%;
   }
   .submission {
     width: 100%;
@@ -127,8 +136,13 @@ getSubmissions()
     display: flex;
     justify-content: center;
   }
-  .input-container{
+  .search-container{
     padding: 8px;
     margin: 4px;
+    display: flex;
+    flex-direction: column;
+  }
+  .input-container {
+    display: flex;
   }
 </style>

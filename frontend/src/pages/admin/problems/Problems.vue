@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import axios from 'axios';
 import Loader from '@/components/UI/Loader.vue';
 import router from '@/router';
@@ -33,6 +33,9 @@ const getProblems = async () => {
     loading.value = false;
   }
 }
+watch(page, async () => {
+  await getProblems();
+})
 getProblems()
 </script>
 
@@ -61,9 +64,9 @@ getProblems()
     </div>
     <div>
       <div class="pagination" v-if="total > 1">
-          <button v-if="page !== 1" @click="() => { page -= 1; getProblems();}"><</button>
+          <button v-if="page !== 1" @click="page -= 1"><</button>
           <button>{{ page }}</button>
-          <button v-if="page !== total" @click="() => { page += 1; getProblems();}">></button>
+          <button v-if="page !== total" @click="page += 1">></button>
         </div>
       <div class="create">
         <button @click="router.push('/admin/problems/create')">create</button>
