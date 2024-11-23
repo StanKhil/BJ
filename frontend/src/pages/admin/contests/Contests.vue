@@ -24,7 +24,7 @@ const searchContests = async (event) => {
 }
 const getContests = async () => {
   try {
-    const response = await axios.get('/contests', { params: { page: page.value } });
+    const response = await axios.get('/contests/admin', { params: { page: page.value } });
     contests.value = response.data.data;
     total.value = response.data.meta.lastPage;
   } catch(e) {

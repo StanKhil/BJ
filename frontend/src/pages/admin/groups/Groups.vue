@@ -24,7 +24,7 @@ const searchGroups = async (event) => {
 }
 const getGroups = async () => {
   try {
-    const response = await axios.get('/teams', { params: { page: page.value } });
+    const response = await axios.get('/teams/admin', { params: { page: page.value } });
     groups.value = response.data.data;
     total.value = response.data.meta.lastPage;
   } catch(e) {
