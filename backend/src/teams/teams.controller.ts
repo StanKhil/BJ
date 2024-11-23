@@ -46,19 +46,15 @@ export class TeamsController {
     return await this.teamsService.getById(id);
   }
   @Post('')
-  async create(@GetUser('id') userId: string, @Body() dto: CreateTeamDto) {
-    return await this.teamsService.create(userId, dto);
+  async create(@Body() dto: CreateTeamDto) {
+    return await this.teamsService.create(dto);
   }
   @Patch(':id')
-  async update(
-    @GetUser('id') userId: string,
-    @Param('id') id: string,
-    @Body() dto: UpdateTeamDto,
-  ) {
-    return await this.teamsService.update(userId, id, dto);
+  async update(@Param('id') id: string, @Body() dto: UpdateTeamDto) {
+    return await this.teamsService.update(id, dto);
   }
   @Delete(':id')
-  async remove(@GetUser('id') userId: string, @Param('id') id: string) {
-    return await this.teamsService.remove(userId, id);
+  async remove(@Param('id') id: string) {
+    return await this.teamsService.remove(id);
   }
 }

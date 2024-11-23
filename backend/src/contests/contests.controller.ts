@@ -59,16 +59,12 @@ export class ContestsController {
   }
   @Roles(Role.ADMIN)
   @Patch(':id')
-  async update(
-    @GetUser('id') userId: string,
-    @Param('id') id: string,
-    @Body() dto: UpdateContestDto,
-  ) {
-    return await this.contestsService.update(dto, id, userId);
+  async update(@Param('id') id: string, @Body() dto: UpdateContestDto) {
+    return await this.contestsService.update(dto, id);
   }
   @Roles(Role.ADMIN)
   @Delete(':id')
-  async remove(@GetUser('id') userId: string, @Param('id') id: string) {
-    return await this.contestsService.remove(id, userId);
+  async remove(@Param('id') id: string) {
+    return await this.contestsService.remove(id);
   }
 }
