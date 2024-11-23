@@ -27,12 +27,14 @@ import ProblemsEdit from './pages/admin/problems/ProblemsEdit.vue'
 import ProblemsDelete from './pages/admin/problems/ProblemsDelete.vue'
 import Problem from './pages/Problem.vue'
 import Submission from './pages/Submission.vue'
+import SubmissionAdmin from './pages/admin/submissions/Submission.vue'
 
 const routes = [
   { path: '/login', component: Login, name: 'login' },
   { 
     path: '/admin',
     component: Admin,
+    name: 'admin',
     children: [
       { path: 'users', component: UsersAdmin},
       { path: 'users/create', component: UsersCreate },
@@ -50,6 +52,7 @@ const routes = [
       { path: 'problems/create', component: ProblemsCreate },
       { path: 'problems/edit/:id', component: ProblemsEdit },
       { path: 'problems/delete/:id', component: ProblemsDelete },
+      { path: 'submissions', component: SubmissionAdmin }
     ]
   },
   
@@ -71,7 +74,7 @@ router.beforeEach((to, from, next) => {
   const userStore = useUserStore();
   if (to.fullPath.startsWith('/admin') && userStore.user.role !== 'ADMIN') {
     next({name: 'home'})
-  } else if (userStore.user.token || to.name === 'login') {
+  } else if (userStore.user.token || to.name === 'login' || to.name === 'home') {
     next()
   } else {
     next({name: 'login'})

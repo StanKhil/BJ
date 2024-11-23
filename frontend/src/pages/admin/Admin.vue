@@ -1,6 +1,7 @@
 <script setup>
-import { RouterLink } from 'vue-router';
+import { RouterLink, useRoute } from 'vue-router';
 
+const route = useRoute();
 </script>
 
 <template>
@@ -10,10 +11,17 @@ import { RouterLink } from 'vue-router';
     <RouterLink class="link" to="/admin/problems">Problems</RouterLink>
     <RouterLink class="link" to="/admin/groups">Groups</RouterLink>
     <RouterLink class="link" to="/admin/contests">Contests</RouterLink>
+    <RouterLink class="link" to="/admin/submissions">Submissions</RouterLink>
   </div>
-  <div class="content-contaienr">
+  <div class="select-container" v-if="route.name === 'admin'">
+    <div class="select">
+      Pick one
+    </div>
+  </div>
+  <div class="content-contaienr" v-else>
     <router-view></router-view>
   </div>
+  
 </div>
     
 </template>
@@ -42,6 +50,21 @@ import { RouterLink } from 'vue-router';
   color: white;
   padding: 8px;
   border-bottom: 1px solid white;
+}
+.select-container {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+.select {
+  background-color: #5083cf;
+  border-radius: 8px;
+  padding: 8px;
+  color: white;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 </style>
 

@@ -18,9 +18,6 @@ export const useUserStore = defineStore('user', () => {
         user.role = response.data.role;
       } catch (e) {
         console.log(e);
-        if (axios.isAxiosError(e) && e.response?.status === 401) {
-          router.push('/login')
-        } 
       }
     }
     const logout = () => {

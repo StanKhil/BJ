@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import axios from 'axios';
 import Loader from '@/components/UI/Loader.vue';
 import router from '@/router';
@@ -25,7 +25,7 @@ const searchProblems = async (event) => {
 }
 const getProblems = async () => {
   try {
-    const response = await axios.get('/problems');
+    const response = await axios.get('/problems', { params: { page: page.value } });
     problems.value = response.data.data;
     total.value = response.data.meta.lastPage;
   } catch(e) {
@@ -34,6 +34,9 @@ const getProblems = async () => {
     loading.value = false;
   }
 }
+watch(page, async () => {
+  await getProblems();
+})
 getProblems()
 </script>
 
@@ -50,7 +53,13 @@ getProblems()
           <input type="text" placeholder="Search..." @input="searchProblems">
         </div>
         <div class="problem-list">
-          <div v-for="problem in problems" class="problems" @click="router.push(`/problem/${problem.id}`)">
+          <div 
+            v-for="problem in problems" 
+            :key="problem.id" 
+            class="problems" 
+            :style="problem.submission?.verdict === 'OK' ? 'background-color: #d4edda; color: #155724;' : ''"
+            @click="router.push(`/problem/${problem.id}`)"
+          >
             <div class="problem-name">
               {{ problem.name }} ({{ problem.draft }}) ({{ problem.rating }})
             </div>
@@ -58,9 +67,9 @@ getProblems()
         </div>
       </div>
       <div class="pagination" v-if="total > 1">
-        <button v-if="page !== 1" @click="page -= 1"><</button>
-        <button>{{ page }}</button>
-        <button v-if="page !== total" @click="page += 1">></button>
+          <button v-if="page !== 1" @click="page -= 1"><</button>
+          <button>{{ page }}</button>
+          <button v-if="page !== total" @click="page += 1">></button>
       </div>
     </div>
   </div>
@@ -75,6 +84,17 @@ getProblems()
 .problems {
   display: flex;
   background-color: #5083cf;
+  padding: 16px;
+  color: white;
+  margin-top: 4px;
+  border-radius: 8px;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+}
+.solved-problems {
+  display: flex;
+  background-color: #33ca15;
   padding: 16px;
   color: white;
   margin-top: 4px;

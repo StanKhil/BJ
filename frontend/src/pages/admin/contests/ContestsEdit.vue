@@ -9,6 +9,7 @@ const route = useRoute();
 
 const teamId = ref('');
 const name = ref('');
+const contestId = ref('')
 const problems = ref([]);
 const searchedProblems = ref([]);
 const timeEnd = ref("");
@@ -67,6 +68,7 @@ const getContest = async () => {
     timeEnd.value = moment(response.data.timeEnd).format("YYYY-MM-DDTHH:mm:ss");
     timeStart.value = moment(response.data.timeStart).format("YYYY-MM-DDTHH:mm:ss");
     teamId.value = response.data.teamId;
+    contestId.value=response.data.id;
   } catch(e) {
     console.log(e);
   }
@@ -78,7 +80,8 @@ getContest()
 <template>
   <div class="container">
     <div class="title">
-      <h3>Edit: {{ teamId }}</h3>
+      <h3>Team id: {{ teamId }}</h3>
+      <h3>Contest id: {{ contestId }}</h3>
     </div>
     <form class="main" @submit.prevent="edit">
       <div class="input-container">

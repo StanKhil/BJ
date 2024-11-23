@@ -1,7 +1,9 @@
 <script setup>
+import { useUserStore } from '@/stores/user.store';
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
+const userStore = useUserStore();
 </script>
 
 <template>
@@ -11,7 +13,8 @@ const router = useRouter();
       <div class="container">
         <h2>Welcome to Bubble Judge</h2>
         <p>Your hub for mastering competitive programming and showcasing your skills!</p>
-        <a @click="router.push('/problems')" class="cta-button">Explore problems</a>
+        <a @click="router.push('/problems')" class="cta-button" v-if="userStore.user.id">Explore problems</a>
+        <a @click="router.push('/login')" class="cta-button" v-else>Login</a>
       </div>
     </section>
 
@@ -35,20 +38,6 @@ const router = useRouter();
         </div>
       </div>
     </section>
-
-    <!-- Featured Competitions -->
-    <!-- <section id="competitions" class="competitions">
-      <div class="container">
-        <h2>Upcoming Competitions</h2>
-        <div class="competitions-grid">
-          <div class="competition-card" v-for="competition in competitions" :key="competition.id">
-            <h3>{{ competition.name }}</h3>
-            <p>{{ competition.description }}</p>
-            <a :href="competition.link" class="cta-button">Join Now</a>
-          </div>
-        </div>
-      </div>
-    </section> -->
   </div>
 </template>
 

@@ -61,27 +61,29 @@ onMounted(async () => {
     <div class="container" v-else>
       <div class="time-container">
         <div class="time-title">
-          <div>{{ contest.timeStart.toLocaleTimeString('en-US') }}</div>
-          <div>{{ contest.timeEnd.toLocaleTimeString('en-US') }}</div>
+          <div>{{ contest.timeStart.toLocaleString('en-US') }}</div>
+          <div>{{ contest.timeEnd.toLocaleString('en-US') }}</div>
         </div>
         <progress class="time" :value="now - contest.timeStart" :max="contest.timeEnd - contest.timeStart"></progress>
       </div>
       <div class="table">
         <div class="row">
           <div class="td">+</div>
-          <div v-for="user in users"class="td user-name">
+          <div v-for="user in users" :key="user.id" class="td user-name">
             {{ user.username }}
           </div>
         </div>
-        <div v-for="problem in problemsResult" class="row">
+        <div v-for="problem in problemsResult" :key="problem.id" class="row">
           <div class="td problem-name" @click="router.push(`/problem/${problem.id}`)">
             {{ problem.name }}
           </div>
-          <div v-for="user in users" class="td">
-            <div v-for="result in problem.submission" >
-              <div v-if="result.user.id === user.id">{{ result.verdict }}</div>
+          <div v-for="user in users" :key="user.id" class="td">
+            <div v-for="result in problem.submissions" :key="result.id">
+              <div v-if="result.user.id === user.id">
+                {{ result.verdict }}
+              </div>
             </div>
-            <div v-if="problem?.submission?.filter((s) => s.user.id === user.id).length === 0">
+            <div v-if="!problem.submissions.some((s) => s.user.id === user.id)">
               0
             </div>
           </div>
