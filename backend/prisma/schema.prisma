@@ -22,8 +22,7 @@ model User {
   updatedAt DateTime @updatedAt
   submissions Submission[]
 
-  ownerTeam Team[] @relation("participants")
-  teams Team[]
+  teams Team[] @relation("participants")
 }
 model Problem {
   id String   @id @default(uuid())
@@ -64,8 +63,6 @@ model Submission {
 model Team {
   id String   @id @default(uuid())
   name String @unique
-  ownerId String
-  owner User @relation(fields: [ownerId], references: [id], onDelete: Cascade)
   participants User[] @relation("participants")
   contests Contest[]
 }

@@ -60,31 +60,19 @@ export class TeamsService {
       },
     });
   }
-  async create(userId: string, dto: CreateTeamDto) {
+  async create(dto: CreateTeamDto) {
     return await this.prisma.team.create({
       data: {
         name: dto.name,
-        owner: {
-          connect: {
-            id: userId,
-          },
-        },
-        participants: {
-          connect: {
-            id: userId,
-          },
-        },
       },
     });
   }
-  async update(userId: string, id: string, dto: UpdateTeamDto) {
+  async update(id: string, dto: UpdateTeamDto) {
     const team = this.prisma.team.findUnique({
-      where: { id, ownerId: userId },
+      where: { id },
     });
     if (!team) {
-      throw new BadRequestException(
-        'team with this id and ownerId doesnt exist',
-      );
+      throw new BadRequestException('team with this id doesnt exist');
     }
     return await this.prisma.team.update({
       where: {
@@ -100,14 +88,12 @@ export class TeamsService {
       },
     });
   }
-  async remove(userId: string, id: string) {
+  async remove(id: string) {
     const team = this.prisma.team.findUnique({
-      where: { id, ownerId: userId },
+      where: { id },
     });
     if (!team) {
-      throw new BadRequestException(
-        'team with this id and ownerId doesnt exist',
-      );
+      throw new BadRequestException('team with this id doesnt exist');
     }
     return await this.prisma.team.delete({
       where: {

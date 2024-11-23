@@ -150,19 +150,14 @@ export class ContestsService {
       },
     });
   }
-  async update(dto: UpdateContestDto, id: string, userId: string) {
+  async update(dto: UpdateContestDto, id: string) {
     const contest = await this.prisma.contest.findUnique({
       where: {
         id,
-        team: {
-          ownerId: userId,
-        },
       },
     });
     if (!contest) {
-      throw new BadRequestException(
-        'contest with that id and owner doesnt exist',
-      );
+      throw new BadRequestException('contest with that id doesnt exist');
     }
     await this.prisma.contest.update({
       where: {
@@ -180,19 +175,14 @@ export class ContestsService {
       },
     });
   }
-  async remove(id: string, userId: string) {
+  async remove(id: string) {
     const contest = await this.prisma.contest.findUnique({
       where: {
         id,
-        team: {
-          ownerId: userId,
-        },
       },
     });
     if (!contest) {
-      throw new BadRequestException(
-        'contest with that id and owner doesnt exist',
-      );
+      throw new BadRequestException('contest with that id doesnt exist');
     }
     return await this.prisma.contest.delete({ where: { id } });
   }
