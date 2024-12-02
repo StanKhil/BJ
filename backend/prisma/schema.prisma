@@ -82,6 +82,8 @@ enum Rating {
 }
 enum Language {
   cpp
+  py
+  java
 }
 enum Verdict {
   PENDING

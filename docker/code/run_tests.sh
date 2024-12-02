@@ -1,19 +1,34 @@
 #!/bin/bash
-
-SOLUTION_FILE="solution.cpp"
-TESTER_FILE="tester.cpp"
 MEMORY_LIMIT=${MEMORY_LIMIT:-65536}
 TIME_LIMIT=${TIME_LIMIT:-1} 
+LANGS=${LANGS:-"cpp"}
+LANGT=${LANGT:-"cpp"}
 
-g++ -o solution $SOLUTION_FILE
-if [ $? -ne 0 ]; then
-    printf "CE" > output.txt
-    exit 0
+if [ $LANGS = "cpp" ]; then
+    g++ -o solution solution.cpp
+    if [ $? -ne 0 ]; then
+        printf "CE" > output.txt
+        exit 0
+    fi
+    (
+    ulimit -v $MEMORY_LIMIT
+    timeout ${TIME_LIMIT}s ./solution < input.txt > user_output.txt
+    )
+elif [ $LANGS = "py" ]; then
+    (
+    ulimit -v $MEMORY_LIMIT
+    timeout ${TIME_LIMIT}s python3 solution.py < input.txt > user_output.txt
+    )
+elif [ $LANGS = "java" ]; then
+    javac solution.java
+    if [ $? -ne 0 ]; then
+        printf "CE" > output.txt
+        exit 0
+    fi
+    (
+    timeout ${TIME_LIMIT}s java -Xmx${MEMORY_LIMIT}k solution < input.txt > user_output.txt
+    )
 fi
-(
-ulimit -v $MEMORY_LIMIT
-timeout ${TIME_LIMIT}s ./solution < input.txt > user_output.txt
-)
 EXIT_CODE=$?
 
 if [ $EXIT_CODE -eq 124 ]; then
@@ -29,13 +44,22 @@ if [ $EXIT_CODE -ne 0 ]; then
     exit 0
 fi
 
-g++ -o tester $TESTER_FILE
-
-if [ $? -ne 0 ]; then
-    printf "CE" > output.txt
-    exit 0
-fi
-
-
 sed -e '$s/$/\n/' input.txt user_output.txt > tester_input.txt
-./tester < tester_input.txt > output.txt
+
+if [ $LANGT = "cpp" ]; then
+    g++ -o tester tester.cpp
+    if [ $? -ne 0 ]; then
+        printf "CE" > output.txt
+        exit 0
+    fi
+    ./tester < tester_input.txt > output.txt
+elif [ $LANGT = "py" ]; then
+    python3 tester.py < tester_input.txt > output.txt
+elif [ $LANGT = "java" ]; then
+    javac tester.java
+    if [ $? -ne 0 ]; then
+        printf "CE" > output.txt
+        exit 0
+    fi
+    java tester < tester_input.txt > output.txt
+fi

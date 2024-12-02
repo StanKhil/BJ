@@ -43,20 +43,24 @@ export class JudgeConsumer extends WorkerHost {
           `docker run --rm -v ${join(this.config.get('SUBMISSIONS_PATH_HOST'), dirName, 'input.txt')}:/usr/src/app/input.txt ` +
           `-v ${join(this.config.get('SUBMISSIONS_PATH_HOST'), dirName, 'output.txt')}:/usr/src/app/output.txt ` +
           `-v ${join(this.config.get('SUBMISSIONS_PATH_HOST'), dirName, 'solution.' + solutionLang)}:/usr/src/app/solution.${solutionLang} ` +
-          `-v ${join(this.config.get('SUBMISSIONS_PATH_HOST'), dirName, 'tester.' + solutionLang)}:/usr/src/app/tester.${testerLang} ${this.config.get('DOCKER_CONTAINER')}`;
+          `-v ${join(this.config.get('SUBMISSIONS_PATH_HOST'), dirName, 'tester.' + testerLang)}:/usr/src/app/tester.${testerLang} ` +
+          `-e LANGS=${solutionLang} -e LANGT=${testerLang} ${this.config.get('DOCKER_CONTAINER')}`;
         await exec(command);
         const testVerdict: Verdict = (
           await readFile(join(dirPath, 'output.txt'))
         ).toString() as Verdict;
+        console.log(testVerdict);
         verdicts.push(testVerdict);
         await rm(dirPath, { recursive: true });
       }
       let verdict: Verdict = 'OK';
-      if (verdicts.includes('CE')) verdict = 'CE';
-      else if (verdicts.includes('ML')) verdict = 'ML';
-      else if (verdicts.includes('TL')) verdict = 'TL';
-      else if (verdicts.includes('RE')) verdict = 'RE';
-      else if (verdicts.includes('WA')) verdict = 'WA';
+      for (const v of verdicts) {
+        if (v.includes('CE')) verdict = 'CE';
+        else if (v.includes('ML')) verdict = 'ML';
+        else if (v.includes('TL')) verdict = 'TL';
+        else if (v.includes('RE')) verdict = 'RE';
+        else if (v.includes('WA')) verdict = 'WA';
+      }
       await this.prisma.submission.update({
         where: { id: job.data.submission.id },
         data: { verdict },
