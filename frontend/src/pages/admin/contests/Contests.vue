@@ -129,6 +129,9 @@ getContests()
 .tools > button {
   margin-left: 4px;
 }
+.tools {
+  display: flex;
+}
 .pagination {
   width: 100%;
   display: flex;

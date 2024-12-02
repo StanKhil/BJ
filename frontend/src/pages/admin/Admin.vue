@@ -28,7 +28,7 @@ const route = useRoute();
 
 <style scoped>
 .content-contaienr {
-  width: 100%;
+  width: calc(100% - 160px);
 }
 .container {
   position: relative;
@@ -36,7 +36,7 @@ const route = useRoute();
 }
 .sidenav {
   height: 100%;
-  width: 160px;
+  width: 120px;
   z-index: 1;
   top: 0;
   left: 0;
@@ -52,7 +52,7 @@ const route = useRoute();
   border-bottom: 1px solid white;
 }
 .select-container {
-  width: 100%;
+  width: calc(100% - 160px);
   height: 100%;
   position: relative;
 }
