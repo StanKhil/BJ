@@ -14,6 +14,6 @@ const app = createApp(App);
 pinia.use( ({store}) => { store.router = router })
 
 app
-.use(router)
 .use(pinia)
+.use(router)
 .mount('#app');

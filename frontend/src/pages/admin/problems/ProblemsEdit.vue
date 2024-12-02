@@ -176,6 +176,8 @@ getTester();
           <select v-model="tester.language" required>
             <option disabled value="">Language</option>
             <option>cpp</option>
+            <option>java</option>
+            <option value="py">python</option>
           </select>
         </div>
         <button type="submit">Enter</button>

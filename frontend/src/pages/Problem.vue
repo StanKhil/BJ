@@ -85,6 +85,8 @@ getProblem()
             <select v-model="submmision.language" required>
               <option disabled value="">Language</option>
               <option>cpp</option>
+              <option>java</option>
+              <option value="py">python</option>
             </select>
             <textarea v-model="submmision.code" placeholder="Send yor submmision" required>My code</textarea>
             <button type="submit" :disabled="reload">Enter</button>

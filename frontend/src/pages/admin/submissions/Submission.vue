@@ -89,6 +89,7 @@ getSubmissions();
     border-radius: 8px;
     justify-content: space-between;
     align-items: center;
+    cursor: pointer;
   }
   .submission-list {
     padding: 8px;
@@ -122,9 +123,6 @@ getSubmissions();
   .create > button {
     width: 100%;
     background-color: #4673b6;
-  }
-  .tools > button {
-    margin-left: 4px;
   }
   .problem-list-container {
     display: flex;

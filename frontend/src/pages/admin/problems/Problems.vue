@@ -131,6 +131,9 @@ getProblems()
 .tools > button {
   margin-left: 4px;
 }
+.tools {
+  display: flex;
+}
 .problem-list-container {
   display: flex;
   flex-direction: column;

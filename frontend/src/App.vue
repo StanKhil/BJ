@@ -1,4 +1,5 @@
 <script setup>
+import { onMounted } from 'vue';
 import HeaderComponent from './components/HeaderComponent.vue';
 import ToastComponent from './components/ToastComponent.vue';
 import { useUserStore } from './stores/user.store';
@@ -6,7 +7,7 @@ import axios from 'axios';
 
 const userStore = useUserStore()
 axios.defaults.headers.common['Authorization'] = `Bearer ${localStorage.getItem('token')}`;
-userStore.checkToken()
+onMounted(async () => await userStore.checkToken())
 </script>
 
 <template>
