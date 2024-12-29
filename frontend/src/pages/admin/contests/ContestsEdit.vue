@@ -21,8 +21,8 @@ const edit = async () => {
     await axios.patch(`/contests/${route.params.id}`, {
       name: name.value,
       problems: problems.value.map((problem) => problem.id),
-      timeEnd: (new Date(timeEnd.value)).toISOString(),
-      timeStart: (new Date(timeStart.value)).toISOString(),
+      timeEnd: new Date(timeEnd.value),
+      timeStart: new Date(timeStart.value),
     });
     await router.push('/admin/contests');
   } catch (e) {
@@ -68,7 +68,7 @@ const getContest = async () => {
     timeEnd.value = moment(response.data.timeEnd).format("YYYY-MM-DDTHH:mm:ss");
     timeStart.value = moment(response.data.timeStart).format("YYYY-MM-DDTHH:mm:ss");
     teamId.value = response.data.teamId;
-    contestId.value=response.data.id;
+    contestId.value = response.data.id;
   } catch(e) {
     console.log(e);
   }

@@ -20,8 +20,8 @@ const create = async () => {
       teamId: teamid.value,
       name: name.value,
       problems: problems.value.map((prpblem) => prpblem.id),
-      timeEnd: (new Date(timeEnd.value)).toISOString,
-      timeStart: (new Date(timeStart.value)).toISOString,
+      timeEnd: new Date(timeEnd.value),
+      timeStart: new Date(timeStart.value),
     });
     await router.push('/admin/contests');
   } catch (e) {
